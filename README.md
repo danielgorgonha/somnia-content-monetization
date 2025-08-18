@@ -46,10 +46,16 @@ somnia-content-monetization/
 pnpm run compile
 
 # Run tests
-pnpm run test
+pnpm run test:contracts
+
+# Run tests with gas reporting
+pnpm run test:gas
 
 # Deploy to testnet
 pnpm run deploy:testnet
+
+# Verify contracts
+pnpm run verify:testnet
 ```
 
 ### Frontend
@@ -61,20 +67,44 @@ pnpm run dev
 pnpm run build
 ```
 
+### Testing & Environment
+```bash
+# Setup test environment
+pnpm run test:setup
+
+# Run all tests
+pnpm run test:contracts
+
+# Run integration tests
+pnpm run test:local
+
+# Clean development environment
+pnpm run clean
+
+# Start Docker services
+pnpm run docker:up
+```
+
 ## 🧪 Testing
 
 ```bash
-# Run all tests
-pnpm test
+# Setup test environment
+pnpm run test:setup
 
-# Run contract tests
+# Run all tests
 pnpm run test:contracts
+
+# Run tests with gas reporting
+pnpm run test:gas
+
+# Run integration tests
+pnpm run test:local
+
+# Coverage report
+pnpm run test:coverage
 
 # Run frontend tests
 pnpm run test:frontend
-
-# Coverage report
-pnpm run coverage
 ```
 
 ## 📚 Documentation
@@ -83,6 +113,8 @@ pnpm run coverage
 - [MVP](./docs/mvp.md) - Technical specifications
 - [Roadmap](./docs/roadmap.md) - Development timeline
 - [Architecture](./docs/architecture.md) - System architecture
+- [Testing](./docs/testing.md) - Testing guide and strategies
+- [Scripts](./docs/scripts.md) - Development scripts guide
 
 ## 🤝 Contributing
 
