@@ -1,0 +1,51 @@
+{
+  "name": "somnia-content-monetization",
+  "version": "1.0.0",
+  "description": "Universal micropayment platform for digital content creators",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"pnpm run dev:contracts\" \"pnpm run dev:frontend\"",
+    "dev:contracts": "hardhat node",
+    "dev:frontend": "cd frontend && pnpm run dev",
+    "compile": "hardhat compile",
+    "test": "pnpm run test:contracts && pnpm run test:frontend",
+    "test:contracts": "hardhat test",
+    "test:frontend": "cd frontend && pnpm test",
+    "coverage": "hardhat coverage",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network somnia-testnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network somnia-mainnet",
+    "verify:testnet": "hardhat verify --network somnia-testnet",
+    "verify:mainnet": "hardhat verify --network somnia-mainnet",
+    "lint": "pnpm run lint:contracts && pnpm run lint:frontend",
+    "lint:contracts": "solhint 'contracts/**/*.sol'",
+    "lint:frontend": "cd frontend && pnpm run lint",
+    "format": "prettier --write .",
+    "type-check": "cd frontend && pnpm run type-check"
+  },
+  "keywords": [
+    "blockchain",
+    "defi",
+    "micropayments",
+    "somnia",
+    "content-creators",
+    "streaming"
+  ],
+  "author": "Somnia Content Monetization Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "hardhat": "^2.19.0",
+    "solhint": "^4.0.0",
+    "prettier": "^3.0.0",
+    "concurrently": "^8.0.0"
+  },
+  "dependencies": {
+    "ethers": "^6.8.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}
