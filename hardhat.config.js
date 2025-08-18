@@ -10,43 +10,57 @@ module.exports = {
         enabled: true,
         runs: 200,
       },
+      viaIR: true,
     },
   },
   networks: {
-    hardhat: {
-      chainId: 1337,
+    // Local development network
+    localhost: {
+      url: "http://127.0.0.1:8545",
+      chainId: 31337,
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
+    // Anvil network (Docker)
+    anvil: {
+      url: "http://localhost:8545",
+      chainId: 31337,
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    },
+    // Somnia Testnet (Shannon)
     "somnia-testnet": {
-      url: process.env.SOMNIA_TESTNET_RPC_URL || "https://testnet.somnia.network",
-      chainId: parseInt(process.env.SOMNIA_CHAIN_ID) || 1234,
+      url: "https://testnet-rpc.somnia.zone",
+      chainId: 80085,
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      gasPrice: 1000000000, // 1 gwei
     },
+    // Somnia Mainnet
     "somnia-mainnet": {
-      url: process.env.SOMNIA_MAINNET_RPC_URL || "https://mainnet.somnia.network",
-      chainId: parseInt(process.env.SOMNIA_CHAIN_ID) || 1234,
+      url: "https://rpc.somnia.zone",
+      chainId: 80085,
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      gasPrice: 1000000000, // 1 gwei
     },
   },
   etherscan: {
     apiKey: {
-      "somnia-testnet": process.env.SOMNIA_EXPLORER_API_KEY || "",
-      "somnia-mainnet": process.env.SOMNIA_EXPLORER_API_KEY || "",
+      "somnia-testnet": process.env.SOMNIA_API_KEY || "",
+      "somnia-mainnet": process.env.SOMNIA_API_KEY || "",
     },
     customChains: [
       {
         network: "somnia-testnet",
-        chainId: parseInt(process.env.SOMNIA_CHAIN_ID) || 1234,
+        chainId: 80085,
         urls: {
-          apiURL: "https://testnet-explorer.somnia.network/api",
-          browserURL: "https://testnet-explorer.somnia.network",
+          apiURL: "https://testnet-explorer.somnia.zone/api",
+          browserURL: "https://testnet-explorer.somnia.zone",
         },
       },
       {
         network: "somnia-mainnet",
-        chainId: parseInt(process.env.SOMNIA_CHAIN_ID) || 1234,
+        chainId: 80085,
         urls: {
-          apiURL: "https://explorer.somnia.network/api",
-          browserURL: "https://explorer.somnia.network",
+          apiURL: "https://explorer.somnia.zone/api",
+          browserURL: "https://explorer.somnia.zone",
         },
       },
     ],
@@ -54,8 +68,17 @@ module.exports = {
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    gasPrice: 1,
+    gasPriceApi: "https://api.etherscan.io/api?module=proxy&action=eth_gasPrice",
   },
   mocha: {
-    timeout: 40000,
+    timeout: 60000, // 60 seconds
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts",
   },
 };
