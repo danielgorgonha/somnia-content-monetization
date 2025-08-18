@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # Local blockchain node (Anvil)
+  anvil:
+    image: ghcr.io/foundry-rs/foundry:latest
+    container_name: somnia-anvil
+    ports:
+      - "8545:8545"
+    command: >
+      anvil
+      --host 0.0.0.0
+      --port 8545
+      --accounts 10
+      --balance 10000
+      --gas-limit 30000000
+      --gas-price 1000000000
+      --block-time 1
+      --chain-id 31337
+    networks:
+      - somnia-network
+
+  # IPFS node for content metadata
+  ipfs:
+    image: ipfs/kubo:latest
+    container_name: somnia-ipfs
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ipfs_data:/data/ipfs
+    command: >
+      sh -c "
+        ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"*\"]' &&
+        ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"PUT\", \"POST\", \"GET\"]' &&
+        ipfs config --json API.HTTPHeaders.Access-Control-Allow-Headers '[\"Authorization\"]' &&
+        ipfs daemon --migrate=true
+      "
+    networks:
+      - somnia-network
+
+  # Redis for session management
+  redis:
+    image: redis:7-alpine
+    container_name: somnia-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - somnia-network
+
+  # PostgreSQL for analytics (optional)
+  postgres:
+    image: postgres:15-alpine
+    container_name: somnia-postgres
+    environment:
+      POSTGRES_DB: somnia_content
+      POSTGRES_USER: somnia
+      POSTGRES_PASSWORD: somnia123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - somnia-network
+
+  # Monitoring dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: somnia-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - somnia-network
+
+volumes:
+  ipfs_data:
+  redis_data:
+  postgres_data:
+  grafana_data:
+
+networks:
+  somnia-network:
+    driver: bridge
