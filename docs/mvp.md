@@ -4,16 +4,18 @@
 
 Demonstrate that on-chain micropayments are viable, cost-effective, and functional on Somnia Network for any digital content type (video, audio, text, recipes, books, etc.) with seamless user experience and zero friction.
 
+**Status**: ✅ Core contracts implemented and tested
+
 ## 📅 Project Status
 **Current Date**: August 18, 2025 (Day 1 of hackathon)
 **Time Remaining**: 25 days until final delivery
 
 ### 🚨 Immediate Priorities
-1. **Environment Setup** (Day 1-2)
-2. **Basic Smart Contracts** (Day 2-3)
-3. **Minimum Frontend** (Day 4-6)
-4. **Web3 Integration** (Day 6-8)
-5. **Functional Demo** (Day 8-12)
+1. **Environment Setup** (Day 1-2) ✅
+2. **Basic Smart Contracts** (Day 2-3) 🔄
+3. **Minimum Frontend** (Day 4-6) ⏳
+4. **Web3 Integration** (Day 6-8) ⏳
+5. **Functional Demo** (Day 8-12) ⏳
 
 ## 🏗️ Technical Architecture
 
