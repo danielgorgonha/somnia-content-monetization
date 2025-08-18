@@ -18,25 +18,25 @@ Deliver a functional MVP of Somnia Content Monetization demonstrating viable on-
 ## 🚀 Phase 1: Setup & Preparation (Days 1-3) - 🔄 IN PROGRESS
 
 ### Day 1: Environment & Configuration
-- [ ] **Setup development environment**
+- [x] **Setup development environment**
   - Install Node.js, pnpm, Hardhat
   - Configure Somnia Testnet in MetaMask
   - Create public GitHub repository
   - Setup React + TypeScript project
 
-- [ ] **Study Somnia documentation**
+- [x] **Study Somnia documentation**
   - Read official Somnia docs
   - Test faucet for test tokens
   - Explore Blockscout testnet
   - Understand Account Abstraction on Somnia
 
 ### Day 2: Basic Smart Contracts
-- [ ] **Develop CreatorRegistry.sol**
+- [x] **Develop CreatorRegistry.sol**
   - Data structures for creators
   - Registration and query functions
   - Events for transparency
 
-- [ ] **Develop MicroPayVault.sol**
+- [x] **Develop MicroPayVault.sol**
   - Escrow system for balances
   - Deposit and withdrawal functions
   - Creator transfer functions
@@ -47,7 +47,7 @@ Deliver a functional MVP of Somnia Content Monetization demonstrating viable on-
   - Consumption tracking
   - Micropayment settlement
 
-- [ ] **Basic testing**
+- [x] **Basic testing**
   - Local testnet deployment
   - Unit tests
   - Functionality verification
