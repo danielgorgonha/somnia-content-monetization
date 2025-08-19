@@ -17,6 +17,7 @@ services:
       --gas-price 1000000000
       --block-time 1
       --chain-id 31337
+      --allow-origin "*"
     networks:
       - somnia-network
 
