@@ -78,6 +78,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         // Transfer funds
         userBalance.balance -= amount;
         userBalance.monthlySpent += amount;
+        totalVaultBalance -= amount; // Decrement total vault balance
         
         CreatorEarnings storage earnings = creatorEarnings[creator];
         earnings.totalEarnings += amount;
@@ -170,6 +171,9 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         
         (bool success, ) = payable(owner()).call{value: balance}("");
         require(success, "Emergency withdrawal failed");
+        
+        // Reset vault balance after emergency withdrawal
+        totalVaultBalance = 0;
     }
     
     /**

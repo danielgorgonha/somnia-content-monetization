@@ -30,21 +30,21 @@ describe("Somnia Content Monetization - Integration Tests", function () {
             const ratePerUnit = ethers.parseEther("0.001"); // 0.001 SOM per second
             const metadata = "ipfs://QmAmazing";
 
+            // Create a mock token address for testing
+            const mockTokenAddress = "0x1234567890123456789012345678901234567890";
+            
             await creatorRegistry.connect(creator1).registerContent(
-                contentId,
-                title,
-                description,
+                ethers.keccak256(ethers.toUtf8Bytes(contentId)),
+                mockTokenAddress, // token address
                 contentType,
-                consumptionType,
                 ratePerUnit,
                 metadata
             );
 
             // Verify content registration
-            const content = await creatorRegistry.getContent(creator1.address, contentId);
-            expect(content.title).to.equal(title);
+            const content = await creatorRegistry.getContent(ethers.keccak256(ethers.toUtf8Bytes(contentId)));
             expect(content.ratePerUnit).to.equal(ratePerUnit);
-            expect(content.isActive).to.be.true;
+            expect(content.active).to.be.true;
 
             // 2. User deposits funds
             const depositAmount = ethers.parseEther("5.0");
@@ -99,12 +99,19 @@ describe("Somnia Content Monetization - Integration Tests", function () {
 
             // 6. Verify total statistics
             expect(await microPayVault.totalMicropaymentsProcessed()).to.equal(2);
-            expect(await microPayVault.getVaultBalance()).to.equal(depositAmount - micropayment1 - micropayment2);
+            
+            // Verify vault balance (should be deposit minus micropayments)
+            const expectedVaultBalance = depositAmount - micropayment1 - micropayment2;
+            const actualVaultBalance = await microPayVault.getVaultBalance();
+            expect(actualVaultBalance).to.equal(expectedVaultBalance);
         });
     });
 
     describe("Multiple Creators and Users", function () {
         it("Should handle multiple creators and users simultaneously", async function () {
+            // Create a mock token address for testing
+            const mockTokenAddress = "0x1234567890123456789012345678901234567890";
+            
             // Setup multiple creators
             const content1 = {
                 id: "video_1",
@@ -120,21 +127,17 @@ describe("Somnia Content Monetization - Integration Tests", function () {
 
             // Register content
             await creatorRegistry.connect(creator1).registerContent(
-                content1.id,
-                content1.title,
-                "Video content",
+                ethers.keccak256(ethers.toUtf8Bytes(content1.id)),
+                mockTokenAddress, // token address
                 0, // VIDEO
-                0, // TIME_BASED
                 content1.rate,
                 "ipfs://Qm1"
             );
 
             await creatorRegistry.connect(creator2).registerContent(
-                content2.id,
-                content2.title,
-                "Article content",
+                ethers.keccak256(ethers.toUtf8Bytes(content2.id)),
+                mockTokenAddress, // token address
                 2, // TEXT
-                1, // VOLUME_BASED
                 content2.rate,
                 "ipfs://Qm2"
             );
