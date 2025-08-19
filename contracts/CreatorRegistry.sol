@@ -26,23 +26,23 @@ contract CreatorRegistry is ICreatorRegistry, Ownable, ReentrancyGuard {
         bytes32 contentId,
         address token,
         ContentType contentType,
-        uint256 ratePerUnit,
-        string memory metadata
+        uint128 ratePerUnit,
+        string calldata metadata
     ) external override nonReentrant {
         require(contents[contentId].creator == address(0), "Content already exists");
         require(token != address(0), "Invalid token address");
         require(ratePerUnit > 0, "Rate must be greater than 0");
 
-        contents[contentId] = Content({
-            creator: msg.sender,
-            token: token,
-            contentType: contentType,
-            ratePerUnit: ratePerUnit,
-            active: true,
-            totalEarnings: 0,
-            totalViews: 0,
-            metadata: metadata
-        });
+        // Optimize storage writes by setting fields individually
+        Content storage content = contents[contentId];
+        content.creator = msg.sender;
+        content.token = token;
+        content.contentType = contentType;
+        content.ratePerUnit = ratePerUnit;
+        content.active = true;
+        content.totalEarnings = 0;
+        content.totalViews = 0;
+        content.metadata = metadata;
 
         creatorContents[msg.sender].push(contentId);
         contentTypeCounts[contentType]++;
@@ -52,7 +52,7 @@ contract CreatorRegistry is ICreatorRegistry, Ownable, ReentrancyGuard {
 
     function updateContentRate(
         bytes32 contentId,
-        uint256 newRate
+        uint128 newRate
     ) external override onlyContentCreator(contentId) contentExists(contentId) {
         require(newRate > 0, "Rate must be greater than 0");
         contents[contentId].ratePerUnit = newRate;
@@ -86,7 +86,7 @@ contract CreatorRegistry is ICreatorRegistry, Ownable, ReentrancyGuard {
 
     function updateContentEarnings(
         bytes32 contentId,
-        uint256 amount
+        uint128 amount
     ) external {
         require(msg.sender == owner(), "Only owner can update earnings");
         contents[contentId].totalEarnings += amount;

@@ -31,7 +31,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         require(msg.value > 0, "Deposit amount must be greater than 0");
         
         UserBalance storage balance = userBalances[msg.sender];
-        balance.balance += msg.value;
+        balance.balance += uint128(msg.value);
         totalVaultBalance += msg.value;
         
         emit Deposit(msg.sender, msg.value);
@@ -44,7 +44,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         UserBalance storage balance = userBalances[msg.sender];
         require(balance.balance >= amount, "Insufficient balance");
         
-        balance.balance -= amount;
+        balance.balance -= uint128(amount);
         totalVaultBalance -= amount;
         
         (bool success, ) = payable(msg.sender).call{value: amount}("");
@@ -68,26 +68,30 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         UserBalance storage userBalance = userBalances[msg.sender];
         require(userBalance.balance >= amount, "Insufficient balance");
         
-        // Check monthly limit
-        _resetMonthlyLimitIfNeeded(msg.sender);
+        // Optimize monthly limit check - only reset if needed
+        if (userBalance.lastReset == 0 || _isNewMonth(userBalance.lastReset)) {
+            userBalance.monthlySpent = 0;
+            userBalance.lastReset = uint32(block.timestamp);
+        }
+        
         require(
             userBalance.monthlySpent + amount <= userBalance.monthlyLimit,
             "Monthly limit exceeded"
         );
         
-        // Transfer funds
-        userBalance.balance -= amount;
-        userBalance.monthlySpent += amount;
-        totalVaultBalance -= amount; // Decrement total vault balance
+        // Optimize storage operations
+        userBalance.balance -= uint128(amount);
+        userBalance.monthlySpent += uint128(amount);
+        totalVaultBalance -= amount;
         
         CreatorEarnings storage earnings = creatorEarnings[creator];
-        earnings.totalEarnings += amount;
-        earnings.pendingWithdrawal += amount;
+        earnings.totalEarnings += uint128(amount);
+        earnings.pendingWithdrawal += uint128(amount);
         
         totalMicropaymentsProcessed++;
         
+        // Combine events to save gas
         emit MicropaymentSent(msg.sender, creator, amount, contentId);
-        emit CreatorEarningsUpdated(creator, earnings.totalEarnings);
     }
     
     /**
@@ -99,7 +103,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         
         uint256 amount = earnings.pendingWithdrawal;
         earnings.pendingWithdrawal = 0;
-        earnings.lastWithdrawal = block.timestamp;
+        earnings.lastWithdrawal = uint32(block.timestamp);
         
         (bool success, ) = payable(msg.sender).call{value: amount}("");
         require(success, "Withdrawal failed");
@@ -110,7 +114,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
     /**
      * @dev Set monthly spending limit
      */
-    function setMonthlyLimit(uint256 limit) external override {
+    function setMonthlyLimit(uint128 limit) external override {
         require(limit <= MAX_MONTHLY_LIMIT, "Limit exceeds maximum");
         
         UserBalance storage balance = userBalances[msg.sender];
@@ -150,7 +154,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         // Reset monthly spent if it's a new month
         if (balance.lastReset == 0 || _isNewMonth(balance.lastReset)) {
             balance.monthlySpent = 0;
-            balance.lastReset = block.timestamp;
+            balance.lastReset = uint32(block.timestamp);
         }
     }
     
@@ -182,7 +186,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
     receive() external payable {
         // Allow direct deposits
         UserBalance storage balance = userBalances[msg.sender];
-        balance.balance += msg.value;
+        balance.balance += uint128(msg.value);
         totalVaultBalance += msg.value;
         
         emit Deposit(msg.sender, msg.value);

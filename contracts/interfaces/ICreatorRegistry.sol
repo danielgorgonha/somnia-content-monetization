@@ -17,10 +17,10 @@ interface ICreatorRegistry {
         address creator;
         address token;
         ContentType contentType;
-        uint256 ratePerUnit;
+        uint128 ratePerUnit;      // Reduced from uint256
         bool active;
-        uint256 totalEarnings;
-        uint256 totalViews;
+        uint128 totalEarnings;    // Reduced from uint256
+        uint64 totalViews;        // Reduced from uint256
         string metadata;
     }
 
@@ -36,11 +36,11 @@ interface ICreatorRegistry {
         bytes32 contentId,
         address token,
         ContentType contentType,
-        uint256 ratePerUnit,
-        string memory metadata
+        uint128 ratePerUnit,
+        string calldata metadata
     ) external;
 
-    function updateContentRate(bytes32 contentId, uint256 newRate) external;
+    function updateContentRate(bytes32 contentId, uint128 newRate) external;
 
     function deactivateContent(bytes32 contentId) external;
 
