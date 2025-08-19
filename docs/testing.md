@@ -19,11 +19,12 @@ Our testing approach focuses on **comprehensive coverage** with multiple layers:
 cp env.example .env
 # Edit .env with your configuration
 
-# Start Docker services (Anvil, IPFS, Redis, PostgreSQL)
-pnpm run docker:up
+# Option A: Full Docker environment (recommended for development)
+pnpm run docker:up          # Start auxiliary services (Redis, PostgreSQL, Grafana, IPFS)
+pnpm run dev:contracts      # Start local Hardhat node (more reliable than Docker Anvil)
 
-# Start local Hardhat node (alternative to Docker Anvil)
-pnpm run dev:contracts
+# Option B: Minimal setup (for testing only)
+pnpm run dev:contracts      # Start local Hardhat node only
 
 # Run all tests
 pnpm run test:contracts
