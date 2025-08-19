@@ -36,6 +36,7 @@ Each ADR follows this structure:
 | [ADR-003](./003-micropayment-amount-limits.md) | Micropayment Amount Limits | Accepted | Limits and validation for micropayments |
 | [ADR-004](./004-monthly-limit-reset-strategy.md) | Monthly Limit Reset Strategy | Accepted | Strategy for resetting monthly spending limits |
 | [ADR-005](./005-gas-optimization-strategy.md) | Gas Optimization Strategy | Accepted | Gas optimization for micropayments |
+| [ADR-006](./006-gas-optimization-implementation.md) | Gas Optimization Implementation | Implemented | Actual gas optimizations implemented in contracts |
 
 ### Future ADRs (Planned)
 

@@ -233,6 +233,7 @@ contract OptimizedContract {
 - ADR-002: MicroPayVault Design
 - ADR-003: Micropayment Amount Limits
 - ADR-004: Monthly Limit Reset Strategy
+- ADR-006: Gas Optimization Implementation
 
 ## References
 - [Ethereum Gas Optimization](https://ethereum.org/en/developers/docs/gas/)
