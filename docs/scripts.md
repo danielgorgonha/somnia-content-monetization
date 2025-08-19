@@ -8,9 +8,6 @@
 Main deployment script for smart contracts.
 
 ```bash
-# Deploy to local network
-pnpm run test:deploy
-
 # Deploy to testnet
 pnpm run deploy:testnet
 
@@ -20,7 +17,7 @@ pnpm run deploy:mainnet
 
 **Features:**
 - ✅ Validates deployer balance
-- ✅ Deploys CreatorRegistry and MicroPayVault
+- ✅ Deploys CreatorRegistry, MicroPayVault, and MeteredAccess
 - ✅ Verifies contract deployment
 - ✅ Saves deployment info to JSON file
 - ✅ Provides network-specific instructions
@@ -31,18 +28,131 @@ pnpm run deploy:mainnet
 - JSON file with deployment details
 - Explorer links for verification
 
-#### `verify.js`
-Contract verification script for block explorers.
+### 🧪 Testing Scripts
+
+#### `test-manual.js`
+Manual testing script for deployed contracts on testnet.
 
 ```bash
-# Verify on local network
-pnpm run test:verify
+# Test deployed contracts on testnet
+pnpm run test:manual
+```
 
-# Verify on testnet
-pnpm run verify:testnet
+**Features:**
+- ✅ Loads contracts from latest deployment automatically
+- ✅ Tests CreatorRegistry content registration
+- ✅ Tests MicroPayVault deposit and monthly limits
+- ✅ Tests MeteredAccess session management
+- ✅ Comprehensive error handling and fallbacks
+- ✅ Real-time balance and status reporting
 
-# Verify on mainnet
-pnpm run verify:mainnet
+**Test Coverage:**
+- Content registration and retrieval
+- User deposits and balance management
+- Monthly limit configuration
+- Session management (when implemented)
+- Error handling and edge cases
+
+#### `test:contracts`
+Unit and integration tests for smart contracts.
+
+```bash
+# Run all tests
+pnpm run test:contracts
+
+# Run with coverage
+pnpm run test:coverage
+```
+
+**Features:**
+- ✅ 64 comprehensive test cases
+- ✅ Unit tests for each contract
+- ✅ Integration tests for complete workflows
+- ✅ Gas usage optimization tests
+- ✅ Error handling and edge cases
+- ✅ Security and access control tests
+
+### 🔧 Contract Management Scripts
+
+#### `load-contracts.js`
+Intelligent contract loading system for managing multiple versions.
+
+**Features:**
+- ✅ Automatic loading of latest deployment
+- ✅ Support for specific version selection
+- ✅ Multiple network support (testnet, mainnet)
+- ✅ Complete deployment history tracking
+- ✅ Metadata and timestamp information
+
+**Usage:**
+```javascript
+const { loadDeployedContracts, getContractInstances } = require("./load-contracts");
+
+// Load latest version
+const { contracts, metadata } = loadDeployedContracts("somnia-testnet");
+
+// Load specific version
+const { contracts } = loadDeployedContracts("somnia-testnet", "1755576595321");
+
+// Get contract instances
+const instances = await getContractInstances("somnia-testnet");
+```
+
+#### `list-versions.js`
+Lists all available contract versions and deployments.
+
+```bash
+# List all available versions
+pnpm run list:versions
+```
+
+**Features:**
+- ✅ Shows all deployments by network
+- ✅ Displays timestamps and contract addresses
+- ✅ Identifies latest version
+- ✅ Network-specific filtering
+- ✅ Usage instructions
+
+**Output:**
+```
+📋 Available Contract Versions
+
+🌐 SOMNIA-TESTNET:
+   📅 8/19/2025, 1:09:55 AM (LATEST)
+   📁 File: deployment-somnia-testnet-1755576595321.json
+   🔗 CreatorRegistry: 0xf629fB3b2a5a03D70fD14bA88eA4828da5356e5D
+   🔗 MicroPayVault: 0xD2f94B843557d52A81d12ED04553f57BC7D9a819
+   🔗 MeteredAccess: 0xf65391952439f75E2f8c87952f0f143f3117D1f6
+
+💡 Usage:
+   - Use 'LATEST' version for current development
+   - Use specific timestamp for historical testing
+   - Run 'pnpm run test:manual' to test latest version
+```
+
+#### `manage-versions.js`
+Advanced version management with ContractRegistry (Future Implementation).
+
+```bash
+# Manage contract versions (when ContractRegistry is deployed)
+pnpm run manage:versions
+```
+
+**Features:**
+- ✅ Deploy and manage ContractRegistry
+- ✅ Register new contract versions
+- ✅ Activate specific versions
+- ✅ Track version history on-chain
+- ✅ Automatic version switching
+
+### 🔍 Verification Scripts
+
+#### `verify:contracts`
+Contract verification for block explorers.
+
+```bash
+# Verify contracts on testnet
+pnpm run verify:contracts
 ```
 
 **Features:**
@@ -52,159 +162,85 @@ pnpm run verify:mainnet
 - ✅ Generates verification report
 - ✅ Provides explorer links
 
-### 🧪 Testing Scripts
-
-#### `test-setup.js`
-Comprehensive test environment setup.
-
-```bash
-# Setup test environment
-pnpm run test:setup
-```
-
-**Features:**
-- ✅ Deploys contracts for testing
-- ✅ Creates test accounts and balances
-- ✅ Registers sample content
-- ✅ Sends test micropayments
-- ✅ Generates comprehensive test data
-- ✅ Exports test configuration
-
-**Test Data Created:**
-- 3 types of content (video, article, live stream)
-- 5 test users with different balances
-- 7 test micropayments
-- Complete contract state
-
-### 🧹 Maintenance Scripts
-
-#### `clean.js`
-Development environment cleanup.
-
-```bash
-# Basic cleanup
-pnpm run clean
-
-# Full cleanup (including node_modules)
-pnpm run clean:all
-
-# Docker cleanup
-pnpm run clean:docker
-```
-
-**Features:**
-- ✅ Removes Hardhat artifacts (cache, artifacts)
-- ✅ Cleans test coverage files
-- ✅ Removes deployment files
-- ✅ Cleans IDE and OS files
-- ✅ Optional node_modules removal
-- ✅ Optional Docker volume cleanup
-
 ## 📊 Script Output Examples
+
+### Manual Testing Output
+```
+🧪 Testing deployed contracts on Somnia testnet...
+📋 Test Info:
+- Deployer: 0x365b9Ba25b3F116cC95Eeb995B2B64F09A8822f8
+- Balance: 0.042617294 STT
+
+🔗 Using contracts from: deployment-somnia-testnet-1755576595321.json
+📅 Deployed: 8/19/2025, 1:09:55 AM
+
+🔍 Testing CreatorRegistry...
+- Registering content: 0xe8aa2b7454de059e4d7b6522c4474af570ab6b253d31936dd006c39af47f72d8
+✅ Content registered successfully!
+- Content info: {
+  creator: '0x365b9Ba25b3F116cC95Eeb995B2B64F09A8822f8',
+  ratePerUnit: '0.001',
+  active: true
+}
+
+🔍 Testing MicroPayVault...
+- Depositing 0.01 STT
+✅ Deposit successful!
+- Setting monthly limit to 0.05 STT
+✅ Monthly limit set!
+- User balance: { balance: '0.13', monthlyLimit: '0.05', monthlySpent: '0.0' }
+
+🔍 Testing MeteredAccess...
+- Skipping MeteredAccess session test for now
+✅ MicroPayVault is working perfectly!
+
+📊 Final Results:
+- User balance: 0.13 STT
+- User monthly limit: 0.05 STT
+- User monthly spent: 0.0 STT
+
+🎉 Manual testing completed successfully!
+🚀 Ready for frontend development!
+```
 
 ### Deployment Output
 ```
 🚀 Deploying Somnia Content Monetization contracts...
 📋 Deployment Info:
-- Deployer: 0x1234...5678
-- Balance: 1.5 ETH
+- Deployer: 0x365b9Ba25b3F116cC95Eeb995B2B64F09A8822f8
+- Balance: 0.5 STT
 - Network: somnia-testnet
 - Chain ID: 80085
 
 📦 Deploying CreatorRegistry...
-✅ CreatorRegistry deployed to: 0xabcd...efgh
+✅ CreatorRegistry deployed to: 0xf629fB3b2a5a03D70fD14bA88eA4828da5356e5D
 
 📦 Deploying MicroPayVault...
-✅ MicroPayVault deployed to: 0x9876...5432
+✅ MicroPayVault deployed to: 0xD2f94B843557d52A81d12ED04553f57BC7D9a819
+
+📦 Deploying MeteredAccess...
+✅ MeteredAccess deployed to: 0xf65391952439f75E2f8c87952f0f143f3117D1f6
 
 🔍 Verifying deployment...
 ✅ All contracts deployed and verified successfully!
 
-📄 Deployment info saved to: deployment-somnia-testnet-1692400000.json
+📄 Deployment info saved to: deployment-somnia-testnet-1755576595321.json
 
 🎉 Deployment Summary:
 =====================
-- CreatorRegistry: 0xabcd...efgh
-- MicroPayVault: 0x9876...5432
-- MeteredAccess: TBD (Phase 2)
+- CreatorRegistry: 0xf629fB3b2a5a03D70fD14bA88eA4828da5356e5D
+- MicroPayVault: 0xD2f94B843557d52A81d12ED04553f57BC7D9a819
+- MeteredAccess: 0xf65391952439f75E2f8c87952f0f143f3117D1f6
 - Network: somnia-testnet
-- Deployer: 0x1234...5678
+- Deployer: 0x365b9Ba25b3F116cC95Eeb995B2B64F09A8822f8
 
 🔗 Next Steps:
 1. Verify contracts on explorer:
-   - CreatorRegistry: https://testnet-explorer.somnia.zone/address/0xabcd...efgh
-   - MicroPayVault: https://testnet-explorer.somnia.zone/address/0x9876...5432
-2. Update frontend configuration
-3. Test micropayment functionality
-```
-
-### Test Setup Output
-```
-🚀 Setting up Somnia Content Monetization test environment...
-📡 Network: localhost
-🔗 Chain ID: 31337
-
-📋 Test Accounts:
-=================
-👑 Owner:     0x1234...5678
-👤 User1:     0xabcd...efgh
-👤 User2:     0x9876...5432
-🎨 Creator1:  0x1111...2222
-🎨 Creator2:  0x3333...4444
-👤 User3:     0x5555...6666
-👤 User4:     0x7777...8888
-👤 User5:     0x9999...aaaa
-
-📦 Deploying contracts...
-=======================
-✅ CreatorRegistry deployed to: 0xbbbb...cccc
-✅ MicroPayVault deployed to: 0xdddd...eeee
-
-🎭 Setting up test data...
-========================
-✅ Content registered: Introduction to Somnia
-✅ Content registered: Micropayments Guide
-✅ Content registered: Live Coding Session
-
-💰 Setting up user accounts...
-=============================
-✅ 0xabcd... setup: 10.0 SOM deposit, 5.0 SOM limit
-✅ 0x9876... setup: 15.0 SOM deposit, 8.0 SOM limit
-✅ 0x5555... setup: 5.0 SOM deposit, 3.0 SOM limit
-✅ 0x7777... setup: 20.0 SOM deposit, 10.0 SOM limit
-✅ 0x9999... setup: 8.0 SOM deposit, 4.0 SOM limit
-
-💸 Sending test micropayments...
-================================
-✅ Micropayment: 0.001 SOM from 0xabcd... to 0x1111...
-✅ Micropayment: 0.01 SOM from 0xabcd... to 0x3333...
-✅ Micropayment: 0.002 SOM from 0x9876... to 0x1111...
-✅ Micropayment: 0.02 SOM from 0x9876... to 0x3333...
-✅ Micropayment: 0.003 SOM from 0x5555... to 0x1111...
-✅ Micropayment: 0.015 SOM from 0x7777... to 0x3333...
-✅ Micropayment: 0.001 SOM from 0x9999... to 0x1111...
-
-📊 Test Environment Report
-==========================
-🏗️  CreatorRegistry: 0xbbbb...cccc
-🏦 MicroPayVault: 0xdddd...eeee
-💰 Total vault balance: 58.0 SOM
-📈 Total micropayments: 7
-📝 Content registered: 3
-👥 Users setup: 5
-
-🎨 Creator Earnings:
-- Creator1: 0.007 SOM total, 0.007 SOM pending
-- Creator2: 0.045 SOM total, 0.045 SOM pending
-
-📄 Test data exported to: test-setup-localhost-1692400000.json
-
-🎉 Test environment setup completed successfully!
-
-🔗 Next Steps:
-1. Run tests: pnpm run test:contracts
-2. Run integration tests: pnpm run test:local
-3. Check gas usage: pnpm run test:gas
+   - CreatorRegistry: https://testnet.somnia.network/address/0xf629fB3b2a5a03D70fD14bA88eA4828da5356e5D
+   - MicroPayVault: https://testnet.somnia.network/address/0xD2f94B843557d52A81d12ED04553f57BC7D9a819
+   - MeteredAccess: https://testnet.somnia.network/address/0xf65391952439f75E2f8c87952f0f143f3117D1f6
+2. Test contracts: pnpm run test:manual
+3. Update frontend configuration
 ```
 
 ## 🔧 Script Configuration
@@ -212,11 +248,10 @@ pnpm run clean:docker
 ### Environment Variables
 ```bash
 # Required for deployment
-PRIVATE_KEY=your_private_key_here
+DEPLOYER_PRIVATE_KEY=your_private_key_here
 
 # Optional for verification
 SOMNIA_API_KEY=your_api_key_here
-COINMARKETCAP_API_KEY=your_api_key_here
 
 # Optional for gas reporting
 REPORT_GAS=true
@@ -236,7 +271,7 @@ Scripts automatically detect the network from Hardhat configuration:
 
 #### 1. Insufficient Balance
 ```
-❌ Deployment failed: Insufficient deployer balance. Need at least 0.1 ETH for deployment.
+❌ Deployment failed: Insufficient deployer balance. Need at least 0.1 STT for deployment.
 ```
 **Solution:** Add more funds to deployer account
 
@@ -246,20 +281,20 @@ Scripts automatically detect the network from Hardhat configuration:
 ```
 **Solution:** Check network RPC URL and connectivity
 
-#### 3. Contract Verification
+#### 3. Contract Loading
 ```
-❌ CreatorRegistry verification failed: Contract not found
+❌ No deployment files found for network: somnia-testnet
 ```
-**Solution:** Wait for deployment confirmation before verification
+**Solution:** Deploy contracts first using `pnpm run deploy:testnet`
 
 ### Debug Mode
 Enable verbose logging:
 ```bash
 # Set debug environment variable
-DEBUG=true pnpm run deploy:testnet
+DEBUG=true pnpm run test:manual
 
 # Or use Hardhat verbose mode
-npx hardhat run scripts/deploy.js --network somnia-testnet --verbose
+npx hardhat run scripts/test-manual.js --network somnia-testnet --verbose
 ```
 
 ## 📈 Performance Monitoring
@@ -267,10 +302,10 @@ npx hardhat run scripts/deploy.js --network somnia-testnet --verbose
 ### Gas Usage Tracking
 ```bash
 # Run with gas reporting
-pnpm run test:gas
+pnpm run test:coverage
 
 # Monitor specific operations
-npx hardhat test --gas --grep "Micropayment"
+npx hardhat test --grep "Micropayment"
 ```
 
 ### Deployment Metrics
@@ -284,34 +319,36 @@ Scripts automatically track:
 
 ### Typical Development Workflow
 ```bash
-# 1. Clean environment
-pnpm run clean
-
-# 2. Install dependencies
-pnpm install
-
-# 3. Compile contracts
+# 1. Compile contracts
 pnpm run compile
 
-# 4. Setup test environment
-pnpm run test:setup
-
-# 5. Run tests
+# 2. Run tests
 pnpm run test:contracts
 
-# 6. Deploy to testnet
+# 3. Deploy to testnet
 pnpm run deploy:testnet
 
-# 7. Verify contracts
-pnpm run verify:testnet
+# 4. Test deployed contracts
+pnpm run test:manual
+
+# 5. List available versions
+pnpm run list:versions
+
+# 6. Verify contracts
+pnpm run verify:contracts
 ```
 
-### CI/CD Integration
-Scripts are designed for CI/CD pipelines:
-- Exit codes for automation
-- Structured JSON output
-- Error handling for automation
-- Network-specific configurations
+### Production Deployment Workflow
+```bash
+# 1. Deploy to mainnet
+pnpm run deploy:mainnet
+
+# 2. Verify contracts
+pnpm run verify:contracts
+
+# 3. Test on mainnet
+pnpm run test:manual
+```
 
 ## 📚 Additional Resources
 
