@@ -2,6 +2,20 @@
 
 Universal micropayment platform for digital content creators, built on Somnia Network.
 
+## 📊 Project Status
+
+**Current Phase**: Smart Contract Development (Phase 1)  
+**Progress**: Core contracts implemented and tested  
+**Next Milestone**: Frontend MVP development
+
+> 📋 See [Roadmap](./docs/roadmap.md) for detailed timeline and [MVP](./docs/mvp.md) for technical specifications.
+
+## ✨ Key Features
+
+Universal micropayment platform for digital content creators, built on Somnia Network.
+
+> 📖 See [Proposal](./docs/proposal.md) for detailed overview and [Architecture](./docs/architecture.md) for technical details.
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -23,6 +37,12 @@ pnpm install
 cp env.example .env
 # Edit .env with your configuration
 
+# Start Docker environment (recommended)
+pnpm run docker:up
+
+# Setup test environment
+pnpm run test:setup
+
 # Start development
 pnpm run dev
 ```
@@ -40,7 +60,6 @@ somnia-content-monetization/
 
 ## 🛠️ Development
 
-### Smart Contracts
 ```bash
 # Compile contracts
 pnpm run compile
@@ -48,64 +67,20 @@ pnpm run compile
 # Run tests
 pnpm run test:contracts
 
-# Run tests with gas reporting
-pnpm run test:gas
-
-# Deploy to testnet
-pnpm run deploy:testnet
-
-# Verify contracts
-pnpm run verify:testnet
-```
-
-### Frontend
-```bash
-# Start development server
+# Start development
 pnpm run dev
-
-# Build for production
-pnpm run build
 ```
 
-### Testing & Environment
-```bash
-# Setup test environment
-pnpm run test:setup
-
-# Run all tests
-pnpm run test:contracts
-
-# Run integration tests
-pnpm run test:local
-
-# Clean development environment
-pnpm run clean
-
-# Start Docker services
-pnpm run docker:up
-```
+> 🔧 See [Scripts](./docs/scripts.md) for all available commands and [Testing](./docs/testing.md) for testing strategies.
 
 ## 🧪 Testing
 
 ```bash
-# Setup test environment
-pnpm run test:setup
-
 # Run all tests
 pnpm run test:contracts
-
-# Run tests with gas reporting
-pnpm run test:gas
-
-# Run integration tests
-pnpm run test:local
-
-# Coverage report
-pnpm run test:coverage
-
-# Run frontend tests
-pnpm run test:frontend
 ```
+
+> 🧪 See [Testing](./docs/testing.md) for comprehensive testing guide and strategies.
 
 ## 📚 Documentation
 
@@ -115,6 +90,7 @@ pnpm run test:frontend
 - [Architecture](./docs/architecture.md) - System architecture
 - [Testing](./docs/testing.md) - Testing guide and strategies
 - [Scripts](./docs/scripts.md) - Development scripts guide
+- [ADRs](./docs/adr/README.md) - Architecture Decision Records
 
 ## 🤝 Contributing
 
