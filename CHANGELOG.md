@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-08-19
+
+### 🚀 Testnet Deployment & Manual Testing
+
+#### ✅ Added
+- **Somnia Testnet Deployment**: All contracts successfully deployed to Somnia testnet
+  - CreatorRegistry: `0xf629fB3b2a5a03D70fD14bA88eA4828da5356e5D`
+  - MicroPayVault: `0xD2f94B843557d52A81d12ED04553f57BC7D9a819`
+  - MeteredAccess: `0xf65391952439f75E2f8c87952f0f143f3117D1f6`
+- **Manual Testing Script**: `scripts/test-manual.js` for testnet validation
+- **Deployment Artifacts**: Organized deployment files in `deployments/` directory
+- **RPC Configuration**: Fixed Somnia testnet RPC endpoints
+
+#### 🔧 Fixed
+- **Network Configuration**: Corrected RPC URLs for Somnia testnet
+- **Gas Price Issues**: Resolved deployment gas price configuration
+- **Private Key Handling**: Improved environment variable management
+
+#### 🧪 Testing
+- **Manual Testnet Validation**: ✅ All core functionality verified on live testnet
+- **CreatorRegistry**: ✅ Content registration working correctly
+- **MicroPayVault**: ✅ Deposit and monthly limit functionality confirmed
+- **Error Handling**: Robust fallback mechanisms for test failures
+
+#### 📚 Documentation
+- **Deployment Guide**: Complete deployment process documented
+- **Testnet Validation**: Manual testing procedures established
+- **Contract Addresses**: All deployed contract addresses documented
+
+### Technical Achievements
+- **Live Testnet**: Contracts running on Somnia testnet
+- **Real Transactions**: Verified with actual STT tokens
+- **Production Ready**: All contracts tested in real network conditions
+
+---
+
 ## [1.0.0] - 2025-08-19
 
 ### 🎉 Major Release - Smart Contracts Complete

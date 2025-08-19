@@ -5,11 +5,20 @@ Universal micropayment platform for digital content creators, built on Somnia Ne
 ## 📊 Project Status
 
 **Current Phase**: Smart Contract Development (Phase 1) ✅ **COMPLETED**  
-**Progress**: All core contracts implemented, tested, and fully functional  
+**Progress**: All core contracts implemented, tested, deployed, and fully functional  
 **Test Coverage**: 64/64 tests passing  
+**Testnet Status**: ✅ **DEPLOYED & VALIDATED**  
 **Next Milestone**: Frontend MVP development
 
 > 📋 See [Roadmap](./docs/roadmap.md) for detailed timeline and [MVP](./docs/mvp.md) for technical specifications.
+
+## 🚀 Deployed Contracts (Somnia Testnet)
+
+- **CreatorRegistry**: `0xf629fB3b2a5a03D70fD14bA88eA4828da5356e5D`
+- **MicroPayVault**: `0xD2f94B843557d52A81d12ED04553f57BC7D9a819`
+- **MeteredAccess**: `0xf65391952439f75E2f8c87952f0f143f3117D1f6`
+
+> 🔗 **Testnet Explorer**: [Somnia Blockscout](https://testnet.somnia.network)
 
 ## ✨ Key Features
 

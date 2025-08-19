@@ -10,10 +10,11 @@ Deliver a functional MVP of Somnia Content Monetization demonstrating viable on-
 
 ## 📊 Current Status (Day 6)
 - ✅ **Phase 1**: Setup & Preparation (Days 1-3) - **COMPLETED**
-- 🔄 **Phase 2**: Core Development (Days 4-10) - **IN PROGRESS**
-- ⏳ **Phase 3**: UX & Refinement (Days 11-15) - PENDING
-- ⏳ **Phase 4**: Demo & Documentation (Days 16-20) - PENDING
-- ⏳ **Phase 5**: Submission & Presentation (Days 21-25) - PENDING
+- ✅ **Phase 1.5**: Testnet Deployment & Validation (Days 4-6) - **COMPLETED**
+- 🔄 **Phase 2**: Core Development (Days 7-13) - **READY TO START**
+- ⏳ **Phase 3**: UX & Refinement (Days 14-18) - PENDING
+- ⏳ **Phase 4**: Demo & Documentation (Days 19-23) - PENDING
+- ⏳ **Phase 5**: Submission & Presentation (Days 24-28) - PENDING
 
 ## 🚀 Phase 1: Setup & Preparation (Days 1-3) - ✅ COMPLETED
 
@@ -61,12 +62,44 @@ Deliver a functional MVP of Somnia Content Monetization demonstrating viable on-
 - ✅ **Production-Ready Code**: Security, gas optimization, error handling
 - ✅ **Architecture Excellence**: Modular design, clean interfaces, scalability
 
-## 🏗️ Phase 2: Core Development (Days 4-10) - 🔄 IN PROGRESS
+## 🚀 Phase 1.5: Testnet Deployment & Validation (Days 4-6) - ✅ COMPLETED
 
-### 🎯 Priorities for Next 7 Days (Days 4-10)
-**Focus**: Complete Web3 integration and Account Abstraction for functional MVP by Day 10.
+### Day 4-5: Deployment Preparation
+- [x] **Network Configuration**
+  - Configure Somnia testnet in Hardhat
+  - Setup RPC endpoints and gas settings
+  - Prepare deployment scripts
 
-### Day 4-5: Basic Frontend
+- [x] **Environment Setup**
+  - Configure private keys and environment variables
+  - Test network connectivity
+  - Verify account balances
+
+### Day 6: Deployment & Validation
+- [x] **Contract Deployment**
+  - Deploy all contracts to Somnia testnet
+  - Verify contract addresses and deployment success
+  - Organize deployment artifacts
+
+- [x] **Manual Testing**
+  - Create comprehensive manual testing script
+  - Validate all core functionality on live testnet
+  - Confirm CreatorRegistry and MicroPayVault operations
+  - Document contract addresses and test results
+
+### 🎉 Phase 1.5 Achievements Summary
+- ✅ **Live Testnet Deployment**: All contracts deployed and verified
+- ✅ **Manual Testing**: Core functionality validated on real network
+- ✅ **Production Readiness**: Contracts tested with actual STT tokens
+- ✅ **Documentation**: Complete deployment and testing procedures
+- ✅ **Ready for Frontend**: Backend infrastructure fully operational
+
+## 🏗️ Phase 2: Core Development (Days 7-13) - 🔄 READY TO START
+
+### 🎯 Priorities for Next 7 Days (Days 7-13)
+**Focus**: Complete Web3 integration and Account Abstraction for functional MVP by Day 13.
+
+### Day 7-8: Basic Frontend
 - [ ] **Setup React project**
   - Configure Tailwind CSS
   - Install Ethers.js and Wagmi
@@ -77,7 +110,7 @@ Deliver a functional MVP of Somnia Content Monetization demonstrating viable on-
   - Basic video/audio player
   - Micropayment interface
 
-### Day 6-7: Web3 Integration
+### Day 9-10: Web3 Integration
 - [ ] **Wallet connectivity**
   - MetaMask integration
   - WalletConnect fallback
@@ -88,7 +121,7 @@ Deliver a functional MVP of Somnia Content Monetization demonstrating viable on-
   - Session management
   - Consumption tracking
 
-### Day 8-9: Account Abstraction
+### Day 11-12: Account Abstraction
 - [ ] **Implement Smart Wallets**
   - Configure ERC-4337
   - Session keys for micropayments
