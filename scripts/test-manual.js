@@ -11,13 +11,13 @@ async function main() {
     console.log("- Balance:", ethers.formatEther(balance), "STT");
 
     try {
-        // Carregar contratos da versão mais recente
+        // Load contracts from the latest version
         const { contracts, metadata } = loadDeployedContracts("somnia-testnet");
         
         console.log("\n🔗 Using contracts from:", metadata.file);
         console.log("📅 Deployed:", metadata.date);
         
-        // Obter instâncias dos contratos
+        // Get contract instances
         const instances = await getContractInstances("somnia-testnet");
         
         // Testar CreatorRegistry

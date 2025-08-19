@@ -15,7 +15,7 @@ function loadDeployedContracts(network = "somnia-testnet", version = null) {
         throw new Error("Deployments directory not found");
     }
 
-    // Buscar arquivos de deployment para a rede específica
+    // Search deployment files for the specific network
     const deploymentFiles = fs.readdirSync(deploymentPath)
         .filter(file => file.includes(network) && file.endsWith(".json"))
         .sort()
@@ -25,7 +25,7 @@ function loadDeployedContracts(network = "somnia-testnet", version = null) {
         throw new Error(`No deployment files found for network: ${network}`);
     }
 
-    // Se versão específica foi solicitada, buscar por timestamp
+    // If specific version was requested, search by timestamp
     let targetFile;
     if (version) {
         targetFile = deploymentFiles.find(file => file.includes(version));
@@ -33,7 +33,7 @@ function loadDeployedContracts(network = "somnia-testnet", version = null) {
             throw new Error(`Version ${version} not found for network ${network}`);
         }
     } else {
-        // Usar o mais recente
+        // Use the latest
         targetFile = deploymentFiles[0];
     }
 
@@ -62,10 +62,10 @@ function loadDeployedContracts(network = "somnia-testnet", version = null) {
 }
 
 /**
- * Obtém instâncias dos contratos
- * @param {string} network - Nome da rede
- * @param {string} version - Versão específica (opcional)
- * @returns {Object} Objeto com instâncias dos contratos
+ * Gets contract instances
+ * @param {string} network - Network name
+ * @param {string} version - Specific version (optional)
+ * @returns {Object} Object with contract instances
  */
 async function getContractInstances(network = "somnia-testnet", version = null) {
     const { contracts } = loadDeployedContracts(network, version);

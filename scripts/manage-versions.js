@@ -25,7 +25,7 @@ async function main() {
     console.log("📋 Latest deployment:", deploymentFiles[0]);
     console.log("📅 Deployed at:", new Date(latestDeployment.timestamp).toLocaleString());
 
-    // Deploy ContractRegistry se não existir
+    // Deploy ContractRegistry if it doesn't exist
     let contractRegistry;
     const registryAddress = latestDeployment.ContractRegistry;
     
@@ -41,7 +41,7 @@ async function main() {
         console.log("✅ ContractRegistry deployed at:", await contractRegistry.getAddress());
     }
 
-    // Registrar versões dos contratos
+    // Register contract versions
     const contracts = [
         {
             name: "CreatorRegistry",
@@ -78,7 +78,7 @@ async function main() {
                 
                 console.log(`✅ Registered ${contract.name} v${contract.version} at ${contract.address}`);
                 
-                // Ativar a versão
+                // Activate the version
                 const activateTx = await contractRegistry.activateVersion(contract.name, contract.version);
                 await activateTx.wait();
                 console.log(`🎯 Activated ${contract.name} v${contract.version}`);
@@ -89,7 +89,7 @@ async function main() {
         }
     }
 
-    // Verificar versões ativas
+    // Check active versions
     console.log("\n🔍 Checking active versions...");
     
     for (const contract of contracts) {
@@ -114,7 +114,7 @@ async function main() {
         }
     }
 
-    // Salvar registry address no deployment
+    // Save registry address in deployment
     if (!latestDeployment.ContractRegistry) {
         latestDeployment.ContractRegistry = await contractRegistry.getAddress();
         fs.writeFileSync(
