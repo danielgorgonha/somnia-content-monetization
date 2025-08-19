@@ -40,20 +40,33 @@ async function main() {
         contracts.microPayVault = microPayVaultAddress;
         console.log(`✅ MicroPayVault deployed to: ${microPayVaultAddress}`);
 
-        // TODO: Deploy MeteredAccess (Phase 2)
-        console.log("\n⏳ MeteredAccess deployment - Phase 2 (Future)");
-        contracts.meteredAccess = "TBD";
+        // Deploy MeteredAccess
+        console.log("\n📦 Deploying MeteredAccess...");
+        const MeteredAccess = await ethers.getContractFactory("MeteredAccess");
+        const meteredAccess = await MeteredAccess.deploy(
+            creatorRegistryAddress,
+            microPayVaultAddress
+        );
+        await meteredAccess.waitForDeployment();
+
+        const meteredAccessAddress = await meteredAccess.getAddress();
+        contracts.meteredAccess = meteredAccessAddress;
+        console.log(`✅ MeteredAccess deployed to: ${meteredAccessAddress}`);
 
         // Verify deployment
         console.log("\n🔍 Verifying deployment...");
         const creatorRegistryCode = await ethers.provider.getCode(creatorRegistryAddress);
         const microPayVaultCode = await ethers.provider.getCode(microPayVaultAddress);
+        const meteredAccessCode = await ethers.provider.getCode(meteredAccessAddress);
 
         if (creatorRegistryCode === "0x") {
             throw new Error("CreatorRegistry deployment verification failed");
         }
         if (microPayVaultCode === "0x") {
             throw new Error("MicroPayVault deployment verification failed");
+        }
+        if (meteredAccessCode === "0x") {
+            throw new Error("MeteredAccess deployment verification failed");
         }
 
         console.log("✅ All contracts deployed and verified successfully!");
@@ -80,7 +93,7 @@ async function main() {
         console.log("=====================");
         console.log(`- CreatorRegistry: ${creatorRegistryAddress}`);
         console.log(`- MicroPayVault: ${microPayVaultAddress}`);
-        console.log(`- MeteredAccess: TBD (Phase 2)`);
+        console.log(`- MeteredAccess: ${meteredAccessAddress}`);
         console.log(`- Network: ${network.name}`);
         console.log(`- Deployer: ${deployer.address}`);
 
@@ -90,6 +103,7 @@ async function main() {
             console.log("1. Verify contracts on explorer:");
             console.log(`   - CreatorRegistry: https://testnet-explorer.somnia.zone/address/${creatorRegistryAddress}`);
             console.log(`   - MicroPayVault: https://testnet-explorer.somnia.zone/address/${microPayVaultAddress}`);
+            console.log(`   - MeteredAccess: https://testnet-explorer.somnia.zone/address/${meteredAccessAddress}`);
             console.log("2. Update frontend configuration");
             console.log("3. Test micropayment functionality");
         }
