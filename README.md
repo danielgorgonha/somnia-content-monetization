@@ -77,6 +77,15 @@ pnpm run compile
 # Run tests
 pnpm run test:contracts
 
+# Deploy to testnet
+pnpm run deploy:testnet
+
+# Test deployed contracts
+pnpm run test:manual
+
+# List contract versions
+pnpm run list:versions
+
 # Start development
 pnpm run dev
 ```
@@ -92,14 +101,16 @@ pnpm run test:contracts
 
 > 🧪 See [Testing](./docs/testing.md) for comprehensive testing guide and strategies.
 
-## 📚 Documentation
+## �� Documentation
 
+- [Documentation Index](./docs/README.md) - Complete documentation overview
 - [Proposal](./docs/proposal.md) - Project proposal and overview
 - [MVP](./docs/mvp.md) - Technical specifications
 - [Roadmap](./docs/roadmap.md) - Development timeline
 - [Architecture](./docs/architecture.md) - System architecture
 - [Testing](./docs/testing.md) - Testing guide and strategies
 - [Scripts](./docs/scripts.md) - Development scripts guide
+- [Versioning](./docs/versioning.md) - Contract versioning system
 - [ADRs](./docs/adr/README.md) - Architecture Decision Records
 
 ## 🤝 Contributing

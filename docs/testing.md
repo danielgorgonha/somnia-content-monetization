@@ -75,12 +75,33 @@ test/
 - **Creator Workflows**: Content registration to earnings withdrawal
 - **Cross-Contract Interaction**: Registry + Vault integration
 
-### 3. Gas Optimization Tests
+### 3. Manual Tests
+- **Deployed Contract Testing**: Test contracts on live testnet
+- **Real Network Interaction**: Verify functionality with actual transactions
+- **Balance Management**: Test deposits and monthly limits
+- **Content Registration**: Test creator workflows on testnet
+
+```bash
+# Test deployed contracts on testnet
+pnpm run test:manual
+
+# List available contract versions
+pnpm run list:versions
+```
+
+**Manual Test Coverage:**
+- ✅ Content registration and retrieval
+- ✅ User deposits and balance management
+- ✅ Monthly limit configuration
+- ✅ Session management (when implemented)
+- ✅ Error handling and edge cases
+
+### 4. Gas Optimization Tests
 - **Gas Measurement**: Track gas usage per operation
 - **Optimization Targets**: Ensure micropayments are cost-effective
 - **Batch Operations**: Test multiple operations efficiency
 
-### 4. Edge Cases
+### 5. Edge Cases
 - **Invalid Inputs**: Test error handling
 - **Boundary Conditions**: Test limits and constraints
 - **Failure Scenarios**: Test revert conditions
