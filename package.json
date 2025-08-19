@@ -1,6 +1,6 @@
 {
   "name": "somnia-content-monetization",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Universal micropayment platform for digital content creators",
   "main": "index.js",
   "scripts": {

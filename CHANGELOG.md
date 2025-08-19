@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-08-19
+
+### 🚀 TypeScript Migration Complete
+
+#### ✅ Added
+- **Complete TypeScript Migration**: All scripts and tests migrated from JavaScript
+- **TypeScript Configuration**: `tsconfig.json` with optimized settings
+- **Type Annotations**: Proper type safety throughout the codebase
+- **ES6 Module Imports**: Modern import/export syntax
+- **Enhanced Developer Experience**: Better IntelliSense and error detection
+
+#### 🔧 Changed
+- **Scripts Migration**: All `scripts/*.js` → `scripts/*.ts`
+- **Tests Migration**: All `test/*.js` → `test/*.ts`
+- **Hardhat Config**: `hardhat.config.js` → `hardhat.config.ts`
+- **Package Scripts**: Updated all npm scripts to use `.ts` extensions
+- **Import Statements**: Converted from CommonJS to ES6 modules
+
+#### 🧪 Testing
+- **All Tests Passing**: 64/64 tests successful after migration
+- **Type Safety**: Improved error detection at compile time
+- **Backward Compatibility**: Maintained full functionality
+
+#### 📚 Technical
+- **Dependencies**: Added TypeScript and @types/node
+- **Build Process**: Enhanced compilation with type checking
+- **Code Quality**: Improved maintainability and readability
+
+---
+
 ## [1.1.0] - 2025-08-19
 
 ### 🚀 Testnet Deployment & Manual Testing
