@@ -31,7 +31,7 @@ describe("CreatorRegistry", function () {
                 contentId,
                 token.address,
                 0, // VIDEO
-                1000, // rate per unit
+                ethers.parseEther("0.001"), // rate per unit (minimum)
                 metadata
             );
 
@@ -39,7 +39,7 @@ describe("CreatorRegistry", function () {
             expect(content.creator).to.equal(creator.address);
             expect(content.token).to.equal(token.address);
             expect(content.contentType).to.equal(0); // VIDEO
-            expect(content.ratePerUnit).to.equal(1000);
+            expect(content.ratePerUnit).to.equal(ethers.parseEther("0.001"));
             expect(content.active).to.be.true;
             expect(content.metadata).to.equal(metadata);
         });
@@ -49,7 +49,7 @@ describe("CreatorRegistry", function () {
                 contentId,
                 token.address,
                 0,
-                1000,
+                ethers.parseEther("0.001"),
                 "Test content"
             );
 
@@ -58,7 +58,7 @@ describe("CreatorRegistry", function () {
                     contentId,
                     token.address,
                     0,
-                    1000,
+                    ethers.parseEther("0.001"),
                     "Duplicate content"
                 )
             ).to.be.revertedWith("Content already exists");
@@ -70,7 +70,7 @@ describe("CreatorRegistry", function () {
                     contentId,
                     ethers.ZeroAddress,
                     0,
-                    1000,
+                    ethers.parseEther("0.001"),
                     "Test content"
                 )
             ).to.be.revertedWith("Invalid token address");
@@ -85,7 +85,7 @@ describe("CreatorRegistry", function () {
                     0,
                     "Test content"
                 )
-            ).to.be.revertedWith("Rate must be greater than 0");
+            ).to.be.revertedWith("Rate below minimum");
         });
     });
 
@@ -95,16 +95,16 @@ describe("CreatorRegistry", function () {
                 contentId,
                 token.address,
                 0,
-                1000,
+                ethers.parseEther("0.001"),
                 "Test content"
             );
         });
 
         it("Should update content rate", async function () {
-            await creatorRegistry.connect(creator).updateContentRate(contentId, 2000);
+            await creatorRegistry.connect(creator).updateContentRate(contentId, ethers.parseEther("0.002"));
             
             const content = await creatorRegistry.getContent(contentId);
-            expect(content.ratePerUnit).to.equal(2000);
+            expect(content.ratePerUnit).to.equal(ethers.parseEther("0.002"));
         });
 
         it("Should deactivate content", async function () {
@@ -116,7 +116,7 @@ describe("CreatorRegistry", function () {
 
         it("Should fail when non-creator tries to update rate", async function () {
             await expect(
-                creatorRegistry.connect(owner).updateContentRate(contentId, 2000)
+                creatorRegistry.connect(owner).updateContentRate(contentId, ethers.parseEther("0.002"))
             ).to.be.revertedWith("Not content creator");
         });
 
@@ -133,7 +133,7 @@ describe("CreatorRegistry", function () {
                 contentId,
                 token.address,
                 0,
-                1000,
+                ethers.parseEther("0.001"),
                 "Test content"
             );
         });
@@ -160,16 +160,16 @@ describe("CreatorRegistry", function () {
                 contentId,
                 token.address,
                 0,
-                1000,
+                ethers.parseEther("0.001"),
                 "Test content"
             );
         });
 
         it("Should update content earnings", async function () {
-            await creatorRegistry.updateContentEarnings(contentId, 5000);
+            await creatorRegistry.updateContentEarnings(contentId, ethers.parseEther("0.005"));
             
             const content = await creatorRegistry.getContent(contentId);
-            expect(content.totalEarnings).to.equal(5000);
+            expect(content.totalEarnings).to.equal(ethers.parseEther("0.005"));
         });
 
         it("Should increment content views", async function () {
@@ -181,7 +181,7 @@ describe("CreatorRegistry", function () {
 
         it("Should fail when non-owner tries to update earnings", async function () {
             await expect(
-                creatorRegistry.connect(creator).updateContentEarnings(contentId, 5000)
+                creatorRegistry.connect(creator).updateContentEarnings(contentId, ethers.parseEther("0.005"))
             ).to.be.revertedWith("Only owner can update earnings");
         });
 

@@ -6,9 +6,16 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./interfaces/ICreatorRegistry.sol";
 
 contract CreatorRegistry is ICreatorRegistry, Ownable, ReentrancyGuard {
+    // Mappings
     mapping(bytes32 => Content) public contents;
     mapping(address => bytes32[]) public creatorContents;
-    mapping(ContentType => uint256) public contentTypeCounts;
+    
+    // Constants
+    uint256 public constant MIN_RATE_PER_UNIT = 0.001 ether; // 0.001 ETH minimum rate
+    
+    // State variables
+    uint256 public totalContents;
+    uint256 public totalCreators;
 
     modifier onlyContentCreator(bytes32 contentId) {
         require(contents[contentId].creator == msg.sender, "Not content creator");
@@ -28,12 +35,13 @@ contract CreatorRegistry is ICreatorRegistry, Ownable, ReentrancyGuard {
         ContentType contentType,
         uint128 ratePerUnit,
         string calldata metadata
-    ) external override nonReentrant {
-        require(contents[contentId].creator == address(0), "Content already exists");
+    ) external override {
+        require(contentId != bytes32(0), "Invalid content ID");
         require(token != address(0), "Invalid token address");
-        require(ratePerUnit > 0, "Rate must be greater than 0");
-
-        // Optimize storage writes by setting fields individually
+        require(ratePerUnit >= MIN_RATE_PER_UNIT, "Rate below minimum");
+        require(contents[contentId].creator == address(0), "Content already exists");
+        
+        // Create content
         Content storage content = contents[contentId];
         content.creator = msg.sender;
         content.token = token;
@@ -43,10 +51,11 @@ contract CreatorRegistry is ICreatorRegistry, Ownable, ReentrancyGuard {
         content.totalEarnings = 0;
         content.totalViews = 0;
         content.metadata = metadata;
-
+        
+        // Update mappings
         creatorContents[msg.sender].push(contentId);
-        contentTypeCounts[contentType]++;
-
+        totalContents++;
+        
         emit ContentRegistered(contentId, msg.sender, contentType);
     }
 
@@ -95,9 +104,5 @@ contract CreatorRegistry is ICreatorRegistry, Ownable, ReentrancyGuard {
     function incrementContentView(bytes32 contentId) external {
         require(msg.sender == owner(), "Only owner can increment views");
         contents[contentId].totalViews++;
-    }
-
-    function getContentTypeCount(ContentType contentType) external view returns (uint256) {
-        return contentTypeCounts[contentType];
     }
 }
