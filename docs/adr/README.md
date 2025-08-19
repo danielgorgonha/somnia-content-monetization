@@ -12,6 +12,10 @@ This directory contains Architecture Decision Records (ADRs) for the Somnia Cont
 - [ADR-006: Gas Optimization Implementation](./006-gas-optimization-implementation.md) - Implementation details of gas optimizations
 - [ADR-007: Micropayment Precision Issue](./007-micropayment-precision-issue.md) - Issue with micropayment precision and solutions
 - [ADR-008: Micropayment User Parameter Fix](./008-micropayment-user-parameter-fix.md) - Fix for micropayment user identification issue
+- [ADR-009: Race Condition in Session Updates](./009-race-condition-session-updates.md) - Security vulnerability: race condition mitigation
+- [ADR-010: Centralization Risk Mitigation](./010-centralization-risk-mitigation.md) - Security vulnerability: decentralization strategy
+- [ADR-011: Gas Optimization for Loops and Pagination](./011-gas-optimization-loops.md) - Performance optimization: pagination implementation
+- [ADR-012: Security Monitoring Framework](./012-security-monitoring-framework.md) - Security infrastructure: monitoring and alerting
 
 ## What is an ADR?
 
