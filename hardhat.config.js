@@ -18,7 +18,18 @@ module.exports = {
     localhost: {
       url: "http://127.0.0.1:8545",
       chainId: 31337,
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      accounts: [
+        process.env.PRIVATE_KEY,
+        process.env.DEPLOYER_PRIVATE_KEY,
+        process.env.TEST_ACCOUNT_1,
+        process.env.TEST_ACCOUNT_2,
+        process.env.TEST_ACCOUNT_3,
+        process.env.TEST_ACCOUNT_4,
+        process.env.TEST_ACCOUNT_5,
+        process.env.TEST_ACCOUNT_6,
+        process.env.TEST_ACCOUNT_7,
+        process.env.TEST_ACCOUNT_8
+      ].filter(Boolean), // Remove undefined values
     },
     // Anvil network (Docker)
     anvil: {
