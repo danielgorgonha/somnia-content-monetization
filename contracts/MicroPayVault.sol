@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IMicroPayVault.sol";
 
@@ -177,6 +177,10 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
      */
     receive() external payable {
         // Allow direct deposits
-        deposit();
+        UserBalance storage balance = userBalances[msg.sender];
+        balance.balance += msg.value;
+        totalVaultBalance += msg.value;
+        
+        emit Deposit(msg.sender, msg.value);
     }
 }
