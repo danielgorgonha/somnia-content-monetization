@@ -14,15 +14,15 @@ interface IMicroPayVault {
 
     // Structs
     struct UserBalance {
-        uint128 balance;      // Reduced from uint256
-        uint128 monthlyLimit; // Reduced from uint256
-        uint128 monthlySpent; // Reduced from uint256
+        uint256 balance;      // Changed back to uint256 for safety
+        uint256 monthlyLimit; // Changed back to uint256 for safety
+        uint256 monthlySpent; // Changed back to uint256 for safety
         uint32 lastReset;     // Reduced from uint256 (timestamp)
     }
 
     struct CreatorEarnings {
-        uint128 totalEarnings;    // Reduced from uint256
-        uint128 pendingWithdrawal; // Reduced from uint256
+        uint256 totalEarnings;    // Changed back to uint256 for safety
+        uint256 pendingWithdrawal; // Changed back to uint256 for safety
         uint32 lastWithdrawal;    // Reduced from uint256 (timestamp)
     }
 
@@ -31,8 +31,8 @@ interface IMicroPayVault {
     function withdraw(uint256 amount) external;
     function getUserBalance(address user) external view returns (UserBalance memory);
     function getCreatorEarnings(address creator) external view returns (CreatorEarnings memory);
-    function sendMicropayment(address creator, uint256 amount, string calldata contentId) external;
+    function sendMicropayment(address user, address creator, uint256 amount, string calldata contentId) external;
     function withdrawCreatorEarnings() external;
-    function setMonthlyLimit(uint128 limit) external;
+    function setMonthlyLimit(uint256 limit) external;
     function getVaultBalance() external view returns (uint256);
 }

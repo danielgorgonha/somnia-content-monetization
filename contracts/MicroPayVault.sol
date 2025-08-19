@@ -31,7 +31,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         require(msg.value > 0, "Deposit amount must be greater than 0");
         
         UserBalance storage balance = userBalances[msg.sender];
-        balance.balance += uint128(msg.value);
+        balance.balance += msg.value;
         totalVaultBalance += msg.value;
         
         emit Deposit(msg.sender, msg.value);
@@ -44,7 +44,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         UserBalance storage balance = userBalances[msg.sender];
         require(balance.balance >= amount, "Insufficient balance");
         
-        balance.balance -= uint128(amount);
+        balance.balance -= amount;
         totalVaultBalance -= amount;
         
         (bool success, ) = payable(msg.sender).call{value: amount}("");
@@ -57,16 +57,20 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
      * @dev Send micropayment to creator
      */
     function sendMicropayment(
+        address user,
         address creator, 
         uint256 amount, 
         string calldata contentId
     ) external override {
         require(creator != address(0), "Invalid creator address");
+        require(user != address(0), "Invalid user address");
         require(amount >= MIN_MICROPAYMENT, "Amount below minimum");
         require(amount <= MAX_MONTHLY_LIMIT, "Amount exceeds maximum");
         
-        UserBalance storage userBalance = userBalances[msg.sender];
+        UserBalance storage userBalance = userBalances[user];
+        
         require(userBalance.balance >= amount, "Insufficient balance");
+        require(userBalance.monthlyLimit > 0, "Monthly limit not set");
         
         // Optimize monthly limit check - only reset if needed
         if (userBalance.lastReset == 0 || _isNewMonth(userBalance.lastReset)) {
@@ -80,13 +84,13 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
         );
         
         // Optimize storage operations
-        userBalance.balance -= uint128(amount);
-        userBalance.monthlySpent += uint128(amount);
+        userBalance.balance -= amount;
+        userBalance.monthlySpent += amount;
         totalVaultBalance -= amount;
         
         CreatorEarnings storage earnings = creatorEarnings[creator];
-        earnings.totalEarnings += uint128(amount);
-        earnings.pendingWithdrawal += uint128(amount);
+        earnings.totalEarnings += amount;
+        earnings.pendingWithdrawal += amount;
         
         totalMicropaymentsProcessed++;
         
@@ -114,7 +118,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
     /**
      * @dev Set monthly spending limit
      */
-    function setMonthlyLimit(uint128 limit) external override {
+    function setMonthlyLimit(uint256 limit) external override {
         require(limit <= MAX_MONTHLY_LIMIT, "Limit exceeds maximum");
         
         UserBalance storage balance = userBalances[msg.sender];
@@ -186,7 +190,7 @@ contract MicroPayVault is IMicroPayVault, ReentrancyGuard, Ownable {
     receive() external payable {
         // Allow direct deposits
         UserBalance storage balance = userBalances[msg.sender];
-        balance.balance += uint128(msg.value);
+        balance.balance += msg.value;
         totalVaultBalance += msg.value;
         
         emit Deposit(msg.sender, msg.value);
