@@ -35,7 +35,10 @@
     "lint:contracts": "solhint 'contracts/**/*.sol'",
     "lint:frontend": "cd frontend && pnpm run lint",
     "format": "prettier --write .",
-    "type-check": "cd frontend && pnpm run type-check"
+    "type-check": "cd frontend && pnpm run type-check",
+    "manage:versions": "hardhat run scripts/manage-versions.js --network somnia-testnet",
+    "list:versions": "hardhat run scripts/list-versions.js",
+    "verify:contracts": "hardhat verify --network somnia-testnet"
   },
   "keywords": [
     "blockchain",
