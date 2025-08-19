@@ -67,12 +67,14 @@ describe("Somnia Content Monetization - Integration Tests", function () {
             const micropayment2 = ethers.parseEther("0.002");
 
             await microPayVault.connect(user1).sendMicropayment(
+                user1.address,
                 creator1.address,
                 micropayment1,
                 contentId
             );
 
             await microPayVault.connect(user1).sendMicropayment(
+                user1.address,
                 creator1.address,
                 micropayment2,
                 contentId
@@ -166,6 +168,7 @@ describe("Somnia Content Monetization - Integration Tests", function () {
 
             for (const payment of micropayments) {
                 await microPayVault.connect(payment.user).sendMicropayment(
+                    payment.user.address,
                     payment.creator.address,
                     payment.amount,
                     payment.content
@@ -195,6 +198,7 @@ describe("Somnia Content Monetization - Integration Tests", function () {
 
             const minPayment = ethers.parseEther("0.001");
             await microPayVault.connect(user1).sendMicropayment(
+                user1.address,
                 creator1.address,
                 minPayment,
                 "test_content"
@@ -209,6 +213,7 @@ describe("Somnia Content Monetization - Integration Tests", function () {
             // Test insufficient balance
             await expect(
                 microPayVault.connect(user1).sendMicropayment(
+                    user1.address,
                     creator1.address,
                     ethers.parseEther("2.0"), // More than balance
                     "test_content"
@@ -221,6 +226,7 @@ describe("Somnia Content Monetization - Integration Tests", function () {
             
             await expect(
                 microPayVault.connect(user3).sendMicropayment(
+                    user3.address,
                     creator1.address,
                     ethers.parseEther("0.002"), // More than monthly limit
                     "test_content"
@@ -238,13 +244,14 @@ describe("Somnia Content Monetization - Integration Tests", function () {
             
             // Measure gas for single micropayment
             const tx = await microPayVault.connect(user1).sendMicropayment(
+                user1.address,
                 creator1.address,
                 micropaymentAmount,
                 "test_content"
             );
             
             const receipt = await tx.wait();
-            console.log(`Gas used for micropayment: ${receipt.gasUsed.toString()}`);
+
             
             // Gas should be reasonable for micropayments
             expect(receipt.gasUsed).to.be.lt(200000); // Less than 200k gas

@@ -92,6 +92,7 @@ describe("MicroPayVault", function () {
             const contentId = "video_123";
             
             await microPayVault.connect(user1).sendMicropayment(
+                user1.address,
                 creator1.address, 
                 micropaymentAmount, 
                 contentId
@@ -110,6 +111,7 @@ describe("MicroPayVault", function () {
             
             await expect(
                 microPayVault.connect(user1).sendMicropayment(
+                    user1.address,
                     creator1.address, 
                     micropaymentAmount, 
                     "video_123"
@@ -122,6 +124,7 @@ describe("MicroPayVault", function () {
             
             await expect(
                 microPayVault.connect(user1).sendMicropayment(
+                    user1.address,
                     creator1.address, 
                     micropaymentAmount, 
                     "video_123"
@@ -134,6 +137,7 @@ describe("MicroPayVault", function () {
             
             await expect(
                 microPayVault.connect(user1).sendMicropayment(
+                    user1.address,
                     creator1.address, 
                     micropaymentAmount, 
                     "video_123"
@@ -146,6 +150,7 @@ describe("MicroPayVault", function () {
             
             await expect(
                 microPayVault.connect(user1).sendMicropayment(
+                    user1.address,
                     ethers.ZeroAddress, 
                     micropaymentAmount, 
                     "video_123"
@@ -161,11 +166,13 @@ describe("MicroPayVault", function () {
             
             // Send some micropayments
             await microPayVault.connect(user1).sendMicropayment(
+                user1.address,
                 creator1.address, 
                 ethers.parseEther("0.001"), 
                 "video_1"
             );
             await microPayVault.connect(user1).sendMicropayment(
+                user1.address,
                 creator1.address, 
                 ethers.parseEther("0.002"), 
                 "video_2"
