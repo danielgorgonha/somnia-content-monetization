@@ -1,12 +1,12 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+import { expect } from "chai";
+import { ethers } from "hardhat";
 
 describe("CreatorRegistry", function () {
-    let creatorRegistry;
-    let owner;
-    let creator;
-    let token;
-    let contentId;
+    let creatorRegistry: any;
+    let owner: any;
+    let creator: any;
+    let token: any;
+    let contentId: any;
 
     beforeEach(async function () {
         [owner, creator, token] = await ethers.getSigners();

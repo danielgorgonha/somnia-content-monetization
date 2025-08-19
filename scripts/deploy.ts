@@ -1,6 +1,6 @@
-const { ethers } = require("hardhat");
+import { ethers, network } from "hardhat";
 
-async function main() {
+async function main(): Promise<void> {
     console.log("🚀 Deploying Somnia Content Monetization contracts...");
     
     const [deployer] = await ethers.getSigners();
@@ -17,7 +17,7 @@ async function main() {
         throw new Error("Insufficient deployer balance. Need at least 0.1 ETH for deployment.");
     }
 
-    const contracts = {};
+    const contracts: Record<string, string> = {};
 
     try {
         // Deploy CreatorRegistry

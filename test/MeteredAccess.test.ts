@@ -1,16 +1,16 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+import { expect } from "chai";
+import { ethers } from "hardhat";
 
 describe("MeteredAccess", function () {
-    let meteredAccess;
-    let creatorRegistry;
-    let microPayVault;
-    let owner;
-    let creator1;
-    let creator2;
-    let user1;
-    let user2;
-    let mockTokenAddress;
+    let meteredAccess: any;
+    let creatorRegistry: any;
+    let microPayVault: any;
+    let owner: any;
+    let creator1: any;
+    let creator2: any;
+    let user1: any;
+    let user2: any;
+    let mockTokenAddress: any;
 
     beforeEach(async function () {
         [owner, creator1, creator2, user1, user2] = await ethers.getSigners();

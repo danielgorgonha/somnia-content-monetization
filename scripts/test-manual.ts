@@ -1,7 +1,7 @@
-const { ethers } = require("hardhat");
-const { loadDeployedContracts, getContractInstances } = require("./load-contracts");
+import { ethers } from "hardhat";
+import { loadDeployedContracts, getContractInstances } from "./load-contracts";
 
-async function main() {
+async function main(): Promise<void> {
     const [deployer] = await ethers.getSigners();
     console.log("🧪 Testing deployed contracts on Somnia testnet...");
     console.log("📋 Test Info:");
@@ -15,7 +15,7 @@ async function main() {
         const { contracts, metadata } = loadDeployedContracts("somnia-testnet");
         
         console.log("\n🔗 Using contracts from:", metadata.file);
-        console.log("📅 Deployed:", metadata.date);
+        console.log("📅 Deployed:", new Date(metadata.timestamp).toLocaleString());
         
         // Get contract instances
         const instances = await getContractInstances("somnia-testnet");

@@ -1,6 +1,6 @@
-const { ethers } = require("hardhat");
+import { ethers, network } from "hardhat";
 
-async function main() {
+async function main(): Promise<void> {
     console.log("🚀 Setting up Somnia Content Monetization test environment...");
     console.log(`📡 Network: ${network.name}`);
     console.log(`🔗 Chain ID: ${network.config.chainId}`);
@@ -19,7 +19,7 @@ async function main() {
     console.log(`👤 User4:     ${user4.address}`);
     console.log(`👤 User5:     ${user5.address}`);
 
-    const contracts = {};
+    const contracts: Record<string, string> = {};
 
     try {
         // Deploy contracts
@@ -27,13 +27,13 @@ async function main() {
         console.log("=======================");
 
         const CreatorRegistry = await ethers.getContractFactory("CreatorRegistry");
-        const creatorRegistry = await CreatorRegistry.deploy();
+        const creatorRegistry = await CreatorRegistry.deploy() as any;
         await creatorRegistry.waitForDeployment();
         contracts.creatorRegistry = await creatorRegistry.getAddress();
         console.log(`✅ CreatorRegistry deployed to: ${contracts.creatorRegistry}`);
 
         const MicroPayVault = await ethers.getContractFactory("MicroPayVault");
-        const microPayVault = await MicroPayVault.deploy();
+        const microPayVault = await MicroPayVault.deploy() as any;
         await microPayVault.waitForDeployment();
         contracts.microPayVault = await microPayVault.getAddress();
         console.log(`✅ MicroPayVault deployed to: ${contracts.microPayVault}`);

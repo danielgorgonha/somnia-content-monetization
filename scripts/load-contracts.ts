@@ -1,6 +1,7 @@
-const { ethers } = require("hardhat");
-const fs = require("fs");
-const path = require("path");
+import { ethers } from "hardhat";
+import type { Contract } from "ethers";
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * Carrega os endereços dos contratos deployados
@@ -38,7 +39,7 @@ function loadDeployedContracts(network = "somnia-testnet", version = null) {
     }
 
     const deployment = JSON.parse(
-        fs.readFileSync(path.join(deploymentPath, targetFile))
+        fs.readFileSync(path.join(deploymentPath, targetFile), 'utf8')
     );
 
     console.log(`📋 Loading contracts from: ${targetFile}`);
@@ -70,7 +71,7 @@ function loadDeployedContracts(network = "somnia-testnet", version = null) {
 async function getContractInstances(network = "somnia-testnet", version = null) {
     const { contracts } = loadDeployedContracts(network, version);
     
-    const instances = {};
+    const instances: Record<string, Contract> = {};
     
     // Carregar CreatorRegistry
     if (contracts.CreatorRegistry) {
@@ -126,7 +127,7 @@ function listAvailableVersions(network = "somnia-testnet") {
 
     return deploymentFiles.map(file => {
         const deployment = JSON.parse(
-            fs.readFileSync(path.join(deploymentPath, file))
+            fs.readFileSync(path.join(deploymentPath, file), 'utf8')
         );
         
         return {
@@ -142,7 +143,7 @@ function listAvailableVersions(network = "somnia-testnet") {
     });
 }
 
-module.exports = {
+export {
     loadDeployedContracts,
     getContractInstances,
     listAvailableVersions

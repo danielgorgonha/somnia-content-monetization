@@ -1,8 +1,8 @@
-const { ethers } = require("hardhat");
-const fs = require("fs");
-const path = require("path");
+import { ethers } from "hardhat";
+import * as fs from "fs";
+import * as path from "path";
 
-async function main() {
+async function main(): Promise<void> {
     const [deployer] = await ethers.getSigners();
     console.log("🔧 Managing contract versions with account:", deployer.address);
 
@@ -19,7 +19,7 @@ async function main() {
     }
 
     const latestDeployment = JSON.parse(
-        fs.readFileSync(path.join(deploymentPath, deploymentFiles[0]))
+        fs.readFileSync(path.join(deploymentPath, deploymentFiles[0]), 'utf8')
     );
 
     console.log("📋 Latest deployment:", deploymentFiles[0]);

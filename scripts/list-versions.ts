@@ -1,6 +1,6 @@
-const { listAvailableVersions } = require("./load-contracts");
+import { listAvailableVersions } from "./load-contracts";
 
-async function main() {
+async function main(): Promise<void> {
     console.log("📋 Available Contract Versions\n");
     
     const networks = ["somnia-testnet", "somnia-mainnet"];

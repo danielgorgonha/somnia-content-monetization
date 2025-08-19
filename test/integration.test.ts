@@ -1,12 +1,12 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+import { expect } from "chai";
+import { ethers } from "hardhat";
 
 describe("Somnia Content Monetization - Integration Tests", function () {
-    let CreatorRegistry;
-    let MicroPayVault;
-    let creatorRegistry;
-    let microPayVault;
-    let owner, user1, user2, creator1, creator2, user3;
+    let CreatorRegistry: any;
+    let MicroPayVault: any;
+    let creatorRegistry: any;
+    let microPayVault: any;
+    let owner: any, user1: any, user2: any, creator1: any, creator2: any, user3: any;
 
     beforeEach(async function () {
         [owner, user1, user2, creator1, creator2, user3] = await ethers.getSigners();

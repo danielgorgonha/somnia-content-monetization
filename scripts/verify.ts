@@ -1,6 +1,7 @@
-const { ethers } = require("hardhat");
+import { ethers, network } from "hardhat";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-async function main() {
+async function main(): Promise<void> {
     console.log("🔍 Verifying Somnia Content Monetization contracts...");
     console.log(`📡 Network: ${network.name}`);
     console.log(`🔗 Chain ID: ${network.config.chainId}`);
@@ -34,7 +35,7 @@ async function main() {
             console.log(`Contract: ${contracts.creatorRegistry}`);
             
             try {
-                await hre.run("verify:verify", {
+                await (global as any).hre.run("verify:verify", {
                     address: contracts.creatorRegistry,
                     constructorArguments: [],
                 });
@@ -54,7 +55,7 @@ async function main() {
             console.log(`Contract: ${contracts.microPayVault}`);
             
             try {
-                await hre.run("verify:verify", {
+                await (global as any).hre.run("verify:verify", {
                     address: contracts.microPayVault,
                     constructorArguments: [],
                 });

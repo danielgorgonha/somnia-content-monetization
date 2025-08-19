@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 
-async function main() {
+async function main(): Promise<void> {
     console.log("🧹 Cleaning Somnia Content Monetization development environment...");
 
     const filesToRemove = [
