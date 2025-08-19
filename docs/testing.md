@@ -15,11 +15,15 @@ Our testing approach focuses on **comprehensive coverage** with multiple layers:
 ### 1. Local Development Environment
 
 ```bash
+# Setup environment variables (copy from env.example)
+cp env.example .env
+# Edit .env with your configuration
+
 # Start Docker services (Anvil, IPFS, Redis, PostgreSQL)
 pnpm run docker:up
 
-# Setup test environment
-pnpm run test:setup
+# Start local Hardhat node (alternative to Docker Anvil)
+pnpm run dev:contracts
 
 # Run all tests
 pnpm run test:contracts
@@ -27,7 +31,7 @@ pnpm run test:contracts
 # Run with gas reporting
 pnpm run test:gas
 
-# Run integration tests
+# Run integration tests on localhost
 pnpm run test:local
 ```
 
@@ -143,13 +147,13 @@ npx hardhat test --gas
 
 ### Network Testing
 ```bash
-# Test on local network
+# Test on local Hardhat node (recommended)
 pnpm run test:local
 
-# Test on Anvil network
+# Test on Docker Anvil network
 pnpm run test:anvil
 
-# Test on testnet
+# Test on Somnia testnet
 pnpm run test:testnet
 ```
 
@@ -190,13 +194,37 @@ const liveStream = {
 };
 ```
 
+## 🔒 Security Configuration
+
+### Environment Variables
+For secure testing, configure your `.env` file with Hardhat's pre-funded test accounts:
+
+```bash
+# Private Keys (DO NOT COMMIT REAL KEYS)
+# For localhost testing, use Hardhat's pre-funded accounts
+PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+DEPLOYER_PRIVATE_KEY=0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d
+
+# Additional test accounts for localhost (Hardhat pre-funded accounts)
+TEST_ACCOUNT_1=0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a
+TEST_ACCOUNT_2=0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6
+# ... additional accounts as needed
+```
+
+### Security Best Practices
+- ✅ **Never commit private keys** to version control
+- ✅ **Use environment variables** for all sensitive data
+- ✅ **Use pre-funded test accounts** for local development
+- ✅ **Keep .env in .gitignore** to prevent accidental commits
+- ✅ **Use different keys** for different environments
+
 ## 🔍 Test Monitoring
 
-### Gas Usage Targets
-
-| Operation | Target Gas | Current |
-|-----------|------------|---------|
-| Content Registration | < 150k | TBD |
+| Operation | Target Gas | Current | Status |
+|-----------|------------|---------|--------|
+| Micropayment | < 100k | 86,303 | ✅ Exceeded |
+| Content Registration | < 200k | 185,683 | ✅ Met |
+| Deposit | < 70k | 63,137 | ✅ Exceeded |
 | Micropayment | < 100k | TBD |
 | Deposit | < 50k | TBD |
 | Withdrawal | < 80k | TBD |
