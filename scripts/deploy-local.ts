@@ -1,9 +1,12 @@
 import { ethers, network } from "hardhat";
 
 async function main(): Promise<void> {
-    console.log("🚀 Deploying Somnia Content Monetization contracts...");
+    console.log("🚀 Deploying Somnia Content Monetization contracts to local Hardhat...");
     
-    const [deployer] = await ethers.getSigners();
+    // Force use the first Hardhat account (which has 10,000 ETH)
+    const signers = await ethers.getSigners();
+    const deployer = signers[0]; // This should be 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    
     const deployerBalance = await ethers.provider.getBalance(deployer.address);
 
     console.log("📋 Deployment Info:");
@@ -14,6 +17,11 @@ async function main(): Promise<void> {
 
     // Validate deployer balance
     if (deployerBalance < ethers.parseEther("0.1")) {
+        console.error("❌ Available accounts:");
+        for (let i = 0; i < Math.min(signers.length, 5); i++) {
+            const balance = await ethers.provider.getBalance(signers[i].address);
+            console.log(`  Account ${i}: ${signers[i].address} - ${ethers.formatEther(balance)} ETH`);
+        }
         throw new Error("Insufficient deployer balance. Need at least 0.1 ETH for deployment.");
     }
 
@@ -78,10 +86,6 @@ async function main(): Promise<void> {
             deployer: deployer.address,
             timestamp: new Date().toISOString(),
             contracts: contracts,
-            gasUsed: {
-                creatorRegistry: "TBD",
-                microPayVault: "TBD"
-            }
         };
 
         // Create deployments directory if it doesn't exist
@@ -90,7 +94,7 @@ async function main(): Promise<void> {
             require('fs').mkdirSync(deploymentsDir, { recursive: true });
         }
 
-        const filename = `${deploymentsDir}/deployment-${network.name}-${Date.now()}.json`;
+        const filename = `${deploymentsDir}/deployment-local-${Date.now()}.json`;
         require('fs').writeFileSync(filename, JSON.stringify(deploymentInfo, null, 2));
         console.log(`📄 Deployment info saved to: ${filename}`);
 
@@ -103,26 +107,40 @@ async function main(): Promise<void> {
         console.log(`- Network: ${network.name}`);
         console.log(`- Deployer: ${deployer.address}`);
 
-        // Network-specific instructions
-        if (network.name === "somnia-testnet") {
-            console.log("\n🔗 Next Steps:");
-            console.log("1. Verify contracts on explorer:");
-            console.log(`   - CreatorRegistry: https://testnet-explorer.somnia.zone/address/${creatorRegistryAddress}`);
-            console.log(`   - MicroPayVault: https://testnet-explorer.somnia.zone/address/${microPayVaultAddress}`);
-            console.log(`   - MeteredAccess: https://testnet-explorer.somnia.zone/address/${meteredAccessAddress}`);
-            console.log("2. Update frontend configuration");
-            console.log("3. Test micropayment functionality");
-        }
+        // Update frontend contract addresses
+        console.log("\n📝 Updating frontend contract addresses...");
+        const frontendContractsPath = "frontend/src/types/contracts.ts";
+        let frontendContractsContent = require('fs').readFileSync(frontendContractsPath, 'utf8');
+        
+        // Update contract addresses
+        frontendContractsContent = frontendContractsContent.replace(
+            /CREATOR_REGISTRY: '[^']*'/,
+            `CREATOR_REGISTRY: '${creatorRegistryAddress}'`
+        );
+        frontendContractsContent = frontendContractsContent.replace(
+            /MICRO_PAY_VAULT: '[^']*'/,
+            `MICRO_PAY_VAULT: '${microPayVaultAddress}'`
+        );
+        frontendContractsContent = frontendContractsContent.replace(
+            /METERED_ACCESS: '[^']*'/,
+            `METERED_ACCESS: '${meteredAccessAddress}'`
+        );
+        
+        require('fs').writeFileSync(frontendContractsPath, frontendContractsContent);
+        console.log("✅ Frontend contract addresses updated!");
+
+        console.log("\n🚀 Ready to test! The contracts are now deployed and the frontend is configured.");
+        console.log("💡 You can now test the micropayment functionality in the frontend.");
 
     } catch (error) {
-        console.error("❌ Deployment failed:", error.message);
-        throw error;
+        console.error("💥 Deployment failed:", error);
+        process.exit(1);
     }
 }
 
 main()
     .then(() => process.exit(0))
     .catch((error) => {
-        console.error("💥 Deployment failed:", error);
+        console.error(error);
         process.exit(1);
     });

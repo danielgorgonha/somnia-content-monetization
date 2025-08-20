@@ -17,6 +17,9 @@ artifacts/
 typechain/
 typechain-types/
 
+# Deployment files
+deployments/
+
 # Coverage
 coverage/
 coverage.json
