@@ -1,15 +1,29 @@
 import { Link, useLocation } from 'react-router-dom'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useAccount, useConnect, useDisconnect } from 'wagmi'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { Wallet, Video, BarChart3 } from 'lucide-react'
 
 const Header = () => {
   const location = useLocation()
+  const { address, isConnected } = useAccount()
+  const { connect } = useConnect({
+    connector: new MetaMaskConnector(),
+  })
+  const { disconnect } = useDisconnect()
 
   const navItems = [
     { path: '/', label: 'Home', icon: Video },
     { path: '/creator', label: 'Creator', icon: BarChart3 },
     { path: '/dashboard', label: 'Dashboard', icon: Wallet },
   ]
+
+  const handleConnect = () => {
+    if (isConnected) {
+      disconnect()
+    } else {
+      connect()
+    }
+  }
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -50,7 +64,18 @@ const Header = () => {
 
           {/* Wallet Connection */}
           <div className="flex items-center space-x-4">
-            <ConnectButton />
+            <button
+              onClick={handleConnect}
+              className="flex items-center space-x-2 px-4 py-2 bg-somnia-600 text-white rounded-lg hover:bg-somnia-700 transition-colors"
+            >
+              <Wallet className="w-4 h-4" />
+              <span>
+                {isConnected 
+                  ? `${address?.slice(0, 6)}...${address?.slice(-4)}`
+                  : 'Connect Wallet'
+                }
+              </span>
+            </button>
           </div>
         </div>
       </div>
