@@ -18,7 +18,7 @@ const config = {
     localhost: {
       url: "http://127.0.0.1:8545",
       chainId: 31337,
-      accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
+      // Use Hardhat's default accounts (no env needed)
     },
     // Anvil network (Docker)
     anvil: {
