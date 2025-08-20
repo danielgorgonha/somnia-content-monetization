@@ -1,55 +1,146 @@
 import { useAccount } from 'wagmi';
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  type Session,
-  type CreatorProfile,
-  type ContentItem
+import { ethers } from 'ethers';
+import {
+  CONTRACT_ADDRESSES,
+  CONTRACT_ABIS,
+  type Session
 } from '../types/contracts';
 
-// Mock hooks for development
+// Extend Window interface for ethereum
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
+// Helper function to get signer
+const getSigner = async () => {
+  if (typeof window !== 'undefined' && window.ethereum) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    return provider.getSigner();
+  }
+  return null;
+};
+
+// Real contract hooks
 export const useMeteredAccess = () => {
   const { address } = useAccount();
-  
   const [activeSessions, setActiveSessions] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getActiveSessions = useCallback(async () => {
     if (!address) return;
-    setActiveSessions([]);
+    
+    try {
+      const signer = await getSigner();
+      if (!signer) return;
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.METERED_ACCESS,
+        CONTRACT_ABIS.METERED_ACCESS,
+        signer
+      );
+      const sessions = await contract.getActiveSessions(address);
+      setActiveSessions(sessions);
+    } catch (error) {
+      console.error('Error fetching active sessions:', error);
+    }
   }, [address]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const createSession = useCallback(async (creator: string, contentId: string) => {
     if (!address) throw new Error('Wallet not connected');
-    // Mock implementation - parameters not used in development
-    const mockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    return mockHash;
-  }, [address]);
+    
+    setIsLoading(true);
+    try {
+      const signer = await getSigner();
+      if (!signer) throw new Error('No signer available');
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.METERED_ACCESS,
+        CONTRACT_ABIS.METERED_ACCESS,
+        signer
+      );
+      const tx = await contract.createSession(creator, contentId);
+      await tx.wait();
+      await getActiveSessions();
+      return tx.hash;
+    } catch (error) {
+      console.error('Error creating session:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [address, getActiveSessions]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const updateSession = useCallback(async (sessionId: string, consumption: number) => {
     if (!address) throw new Error('Wallet not connected');
-    const mockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    return mockHash;
+    
+    setIsLoading(true);
+    try {
+      const signer = await getSigner();
+      if (!signer) throw new Error('No signer available');
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.METERED_ACCESS,
+        CONTRACT_ABIS.METERED_ACCESS,
+        signer
+      );
+      const tx = await contract.updateSession(sessionId, BigInt(consumption));
+      await tx.wait();
+      return tx.hash;
+    } catch (error) {
+      console.error('Error updating session:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   }, [address]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const endSession = useCallback(async (sessionId: string) => {
     if (!address) throw new Error('Wallet not connected');
-    const mockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    return mockHash;
-  }, [address]);
+    
+    setIsLoading(true);
+    try {
+      const signer = await getSigner();
+      if (!signer) throw new Error('No signer available');
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.METERED_ACCESS,
+        CONTRACT_ABIS.METERED_ACCESS,
+        signer
+      );
+      const tx = await contract.endSession(sessionId);
+      await tx.wait();
+      await getActiveSessions();
+      return tx.hash;
+    } catch (error) {
+      console.error('Error ending session:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [address, getActiveSessions]);
 
   const getSession = useCallback(async (sessionId: string): Promise<Session | null> => {
-    return {
-      user: address || '',
-      creator: '0x1234567890123456789012345678901234567890',
-      contentId: sessionId,
-      active: true,
-      startTime: Date.now(),
-      lastUpdate: Date.now(),
-      totalConsumption: 0,
-      totalPaid: 0,
-    };
+    if (!address) return null;
+    
+    try {
+      // Mock for now - would need to implement session retrieval from contract
+      return {
+        user: address,
+        creator: '0x1234567890123456789012345678901234567890',
+        contentId: sessionId,
+        active: true,
+        startTime: Date.now(),
+        lastUpdate: Date.now(),
+        totalConsumption: 0,
+        totalPaid: 0,
+      };
+    } catch (error) {
+      console.error('Error getting session:', error);
+      return null;
+    }
   }, [address]);
 
   useEffect(() => {
@@ -63,111 +154,149 @@ export const useMeteredAccess = () => {
     endSession,
     getSession,
     getActiveSessions,
+    isLoading,
   };
 };
 
 export const useCreatorRegistry = () => {
   const { address } = useAccount();
-  
-  const [creatorProfile, setCreatorProfile] = useState<CreatorProfile | null>(null);
-  const [creatorContent, setCreatorContent] = useState<ContentItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const getCreatorProfile = useCallback(async (creatorAddress?: string) => {
-    const targetAddress = creatorAddress || address;
-    if (!targetAddress) return;
-    
-    setCreatorProfile({
-      address: targetAddress,
-      name: 'Mock Creator',
-      description: 'A mock creator for development',
-      contentCount: 5,
-             totalEarnings: 1000000000000000000, // 1 SOM
-      isVerified: true,
-    });
-  }, [address]);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const registerCreator = useCallback(async (name: string, description: string) => {
+  const registerCreator = useCallback(async (name: string, description: string, rate: number) => {
     if (!address) throw new Error('Wallet not connected');
-    const mockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    return mockHash;
-  }, [address]);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const registerContent = useCallback(async (title: string, description: string, pricePerSecond: number) => {
-    if (!address) throw new Error('Wallet not connected');
-    const mockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    return mockHash;
-  }, [address]);
-
-  const getCreatorContent = useCallback(async (creatorAddress?: string) => {
-    const targetAddress = creatorAddress || address;
-    if (!targetAddress) return;
     
-    setCreatorContent([
-      {
-        id: 'mock-content-1',
-        creator: targetAddress,
-        title: 'Mock Video 1',
-        description: 'A mock video for development',
-                 pricePerSecond: 1000000000000000, // 0.001 SOM/s
-         totalViews: 100,
-         totalEarnings: 500000000000000000, // 0.5 SOM
-        isActive: true,
-        createdAt: Date.now(),
-      }
-    ]);
-  }, [address]);
-
-  useEffect(() => {
-    if (address) {
-      getCreatorProfile();
-      getCreatorContent();
+    setIsLoading(true);
+    try {
+      const signer = await getSigner();
+      if (!signer) throw new Error('No signer available');
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.CREATOR_REGISTRY,
+        CONTRACT_ABIS.CREATOR_REGISTRY,
+        signer
+      );
+      const tx = await contract.registerCreator(name, description, BigInt(rate));
+      await tx.wait();
+      return tx.hash;
+    } catch (error) {
+      console.error('Error registering creator:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
-  }, [address, getCreatorProfile, getCreatorContent]);
+  }, [address]);
+
+  const updateProfile = useCallback(async (name: string, description: string, rate: number) => {
+    if (!address) throw new Error('Wallet not connected');
+    
+    setIsLoading(true);
+    try {
+      const signer = await getSigner();
+      if (!signer) throw new Error('No signer available');
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.CREATOR_REGISTRY,
+        CONTRACT_ABIS.CREATOR_REGISTRY,
+        signer
+      );
+      const tx = await contract.updateProfile(name, description, BigInt(rate));
+      await tx.wait();
+      return tx.hash;
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [address]);
+
+  const addContent = useCallback(async (contentId: string, title: string, description: string, rate: number) => {
+    if (!address) throw new Error('Wallet not connected');
+    
+    setIsLoading(true);
+    try {
+      const signer = await getSigner();
+      if (!signer) throw new Error('No signer available');
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.CREATOR_REGISTRY,
+        CONTRACT_ABIS.CREATOR_REGISTRY,
+        signer
+      );
+      const tx = await contract.addContent(contentId, title, description, BigInt(rate));
+      await tx.wait();
+      return tx.hash;
+    } catch (error) {
+      console.error('Error adding content:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [address]);
 
   return {
-    creatorProfile,
-    creatorContent,
     registerCreator,
-    registerContent,
-    getCreatorProfile,
-    getCreatorContent,
+    updateProfile,
+    addContent,
+    isLoading,
   };
 };
 
 export const useMicroPayVault = () => {
   const { address } = useAccount();
-  
-  const [balance, setBalance] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const getBalance = useCallback(async () => {
-    if (!address) return;
-    setBalance(1.5); // Mock balance
-  }, [address]);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const deposit = useCallback(async (amount: string) => {
+  const deposit = useCallback(async (amount: number) => {
     if (!address) throw new Error('Wallet not connected');
-    const mockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    return mockHash;
+    
+    setIsLoading(true);
+    try {
+      const signer = await getSigner();
+      if (!signer) throw new Error('No signer available');
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.MICRO_PAY_VAULT,
+        CONTRACT_ABIS.MICRO_PAY_VAULT,
+        signer
+      );
+      const tx = await contract.deposit({ value: BigInt(amount) });
+      await tx.wait();
+      return tx.hash;
+    } catch (error) {
+      console.error('Error depositing:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   }, [address]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const withdraw = useCallback(async (amount: string) => {
+  const withdraw = useCallback(async (amount: number) => {
     if (!address) throw new Error('Wallet not connected');
-    const mockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    return mockHash;
+    
+    setIsLoading(true);
+    try {
+      const signer = await getSigner();
+      if (!signer) throw new Error('No signer available');
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.MICRO_PAY_VAULT,
+        CONTRACT_ABIS.MICRO_PAY_VAULT,
+        signer
+      );
+      const tx = await contract.withdraw(BigInt(amount));
+      await tx.wait();
+      return tx.hash;
+    } catch (error) {
+      console.error('Error withdrawing:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   }, [address]);
-
-  useEffect(() => {
-    getBalance();
-  }, [getBalance]);
 
   return {
-    balance,
     deposit,
     withdraw,
-    getBalance,
+    isLoading,
   };
 };
