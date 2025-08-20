@@ -22,4 +22,10 @@ export default defineConfig({
   json: {
     stringify: true,
   },
+  define: {
+    global: 'globalThis',
+  },
+  optimizeDeps: {
+    include: ['buffer'],
+  },
 })
