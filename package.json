@@ -17,6 +17,7 @@
     "test:anvil": "hardhat test --network anvil",
     "test:setup": "hardhat run scripts/test-setup.ts --network localhost",
     "test:deploy": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:local": "hardhat run scripts/deploy-local.ts --network localhost",
     "test:verify": "hardhat run scripts/verify.ts --network localhost",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
@@ -38,7 +39,8 @@
     "type-check": "cd frontend && pnpm run type-check",
     "manage:versions": "hardhat run scripts/manage-versions.ts --network somnia-testnet",
     "list:versions": "hardhat run scripts/list-versions.ts",
-    "verify:contracts": "hardhat verify --network somnia-testnet"
+    "verify:contracts": "hardhat verify --network somnia-testnet",
+    "setup-test-content": "hardhat run scripts/setup-test-content.ts --network localhost"
   },
   "keywords": [
     "blockchain",
