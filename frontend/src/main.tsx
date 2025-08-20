@@ -20,20 +20,43 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     arbitrum,
     base,
     zora,
-    // Add Somnia testnet when available
+    // Hardhat local network for testing
     {
-      id: 80001, // Mumbai testnet for now
+      id: 31337,
+      name: 'Hardhat Local',
+      network: 'hardhat',
+      nativeCurrency: {
+        decimals: 18,
+        name: 'Ether',
+        symbol: 'ETH',
+      },
+      rpcUrls: {
+        public: { http: ['http://127.0.0.1:8545'] },
+        default: { http: ['http://127.0.0.1:8545'] },
+      },
+      testnet: true,
+    },
+    // Somnia testnet configuration
+    {
+      id: 80085, // Correct Somnia testnet chain ID
       name: 'Somnia Testnet',
       network: 'somnia-testnet',
       nativeCurrency: {
         decimals: 18,
-        name: 'Somnia Token',
+        name: 'Somnia',
         symbol: 'SOM',
       },
       rpcUrls: {
         public: { http: ['https://testnet.somnia.network'] },
         default: { http: ['https://testnet.somnia.network'] },
       },
+      blockExplorers: {
+        default: {
+          name: 'Somnia Blockscout',
+          url: 'https://testnet.somnia.network',
+        },
+      },
+      testnet: true,
     },
   ],
   [publicProvider()]
