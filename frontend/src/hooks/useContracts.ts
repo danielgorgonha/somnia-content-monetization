@@ -17,10 +17,26 @@ declare global {
 // Helper function to get signer
 const getSigner = async () => {
   if (typeof window !== 'undefined' && window.ethereum) {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    
+    // Check if we're on the correct network (Hardhat local)
+    const network = await provider.getNetwork();
+    console.log('Current network:', network);
+    
+    // For Hardhat local, chainId should be 31337
+    if (network.chainId !== 31337n) {
+      console.warn('Please switch to Hardhat local network (Chain ID: 31337)');
+      return null;
+    }
+    
     return provider.getSigner();
   }
   return null;
+};
+
+// Helper function to convert string to bytes32
+const stringToBytes32 = (str: string): string => {
+  return ethers.encodeBytes32String(str);
 };
 
 // Real contract hooks
@@ -41,14 +57,19 @@ export const useMeteredAccess = () => {
         CONTRACT_ABIS.METERED_ACCESS,
         signer
       );
+      
+      // Try to call the function directly
       const sessions = await contract.getActiveSessions(address);
+      console.log('Active sessions:', sessions);
       setActiveSessions(sessions);
     } catch (error) {
       console.error('Error fetching active sessions:', error);
+      // If function doesn't exist or contract not deployed, set empty array
+      setActiveSessions([]);
     }
   }, [address]);
 
-  const createSession = useCallback(async (creator: string, contentId: string) => {
+  const startSession = useCallback(async (contentId: string) => {
     if (!address) throw new Error('Wallet not connected');
     
     setIsLoading(true);
@@ -61,12 +82,13 @@ export const useMeteredAccess = () => {
         CONTRACT_ABIS.METERED_ACCESS,
         signer
       );
-      const tx = await contract.createSession(creator, contentId);
+      const contentIdBytes32 = stringToBytes32(contentId);
+      const tx = await contract.startSession(contentIdBytes32);
       await tx.wait();
       await getActiveSessions();
       return tx.hash;
     } catch (error) {
-      console.error('Error creating session:', error);
+      console.error('Error starting session:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -86,7 +108,7 @@ export const useMeteredAccess = () => {
         CONTRACT_ABIS.METERED_ACCESS,
         signer
       );
-      const tx = await contract.updateSession(sessionId, BigInt(consumption));
+      const tx = await contract.updateSession(sessionId, consumption);
       await tx.wait();
       return tx.hash;
     } catch (error) {
@@ -126,16 +148,24 @@ export const useMeteredAccess = () => {
     if (!address) return null;
     
     try {
-      // Mock for now - would need to implement session retrieval from contract
+      const signer = await getSigner();
+      if (!signer) return null;
+      
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESSES.METERED_ACCESS,
+        CONTRACT_ABIS.METERED_ACCESS,
+        signer
+      );
+      const session = await contract.getSession(sessionId);
       return {
-        user: address,
-        creator: '0x1234567890123456789012345678901234567890',
-        contentId: sessionId,
-        active: true,
-        startTime: Date.now(),
-        lastUpdate: Date.now(),
-        totalConsumption: 0,
-        totalPaid: 0,
+        user: session.user,
+        creator: '0x1234567890123456789012345678901234567890', // Mock for now
+        contentId: session.contentId,
+        active: session.active,
+        startTime: Number(session.startTime) * 1000, // Convert to milliseconds
+        lastUpdate: Number(session.lastUpdate) * 1000,
+        totalConsumption: Number(session.totalConsumption),
+        totalPaid: Number(session.totalPayment),
       };
     } catch (error) {
       console.error('Error getting session:', error);
@@ -149,7 +179,7 @@ export const useMeteredAccess = () => {
 
   return {
     activeSessions,
-    createSession,
+    startSession,
     updateSession,
     endSession,
     getSession,
