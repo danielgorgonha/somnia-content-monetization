@@ -6,35 +6,38 @@ const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration] = useState(180) // 3 minutes in seconds
 
-  const contentItems = [
+  const mockContent = [
     {
-      id: 1,
+      id: 'content-1',
       title: 'Introduction to Web3',
-      creator: 'Alice Crypto',
-      duration: '15:30',
-      rate: '0.001 SOM/sec',
-      thumbnail: 'https://via.placeholder.com/300x200',
-      description: 'Learn the basics of Web3 and blockchain technology'
+      creator: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+      thumbnail: 'https://picsum.photos/300/200?random=1',
+      duration: 180,
+      pricePerSecond: 1000000000000000, // 0.001 ETH/s
+      totalViews: 150,
+      totalEarnings: 500000000000000000, // 0.5 ETH
     },
     {
-      id: 2,
-      title: 'Solidity Smart Contracts',
-      creator: 'Bob Developer',
-      duration: '22:15',
-      rate: '0.002 SOM/sec',
-      thumbnail: 'https://via.placeholder.com/300x200',
-      description: 'Deep dive into Solidity programming language'
+      id: 'content-2',
+      title: 'Smart Contract Development',
+      creator: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+      thumbnail: 'https://picsum.photos/300/200?random=2',
+      duration: 240,
+      pricePerSecond: 1500000000000000, // 0.0015 ETH/s
+      totalViews: 89,
+      totalEarnings: 300000000000000000, // 0.3 ETH
     },
     {
-      id: 3,
+      id: 'content-3',
       title: 'DeFi Fundamentals',
-      creator: 'Carol Finance',
-      duration: '18:45',
-      rate: '0.0015 SOM/sec',
-      thumbnail: 'https://via.placeholder.com/300x200',
-      description: 'Understanding decentralized finance concepts'
-    }
-  ]
+      creator: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+      thumbnail: 'https://picsum.photos/300/200?random=3',
+      duration: 300,
+      pricePerSecond: 2000000000000000, // 0.002 ETH/s
+      totalViews: 234,
+      totalEarnings: 800000000000000000, // 0.8 ETH
+    },
+  ];
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -68,8 +71,8 @@ const Dashboard = () => {
           <div className="card">
             <div className="aspect-video bg-gray-900 rounded-lg mb-4 relative">
               <img 
-                src="https://via.placeholder.com/800x450" 
-                alt="Video thumbnail"
+                src="https://picsum.photos/800/450?random=4"
+                alt="Featured Content"
                 className="w-full h-full object-cover rounded-lg"
               />
               
@@ -166,7 +169,7 @@ const Dashboard = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Content Library</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {contentItems.map((item) => (
+            {mockContent.map((item) => (
               <div key={item.id} className="card hover:shadow-md transition-shadow cursor-pointer">
                 <div className="aspect-video bg-gray-200 rounded-lg mb-4">
                   <img 
@@ -176,26 +179,14 @@ const Dashboard = () => {
                   />
                 </div>
                 
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-sm text-gray-600 mb-3">{item.description}</p>
-                  
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="text-gray-500">
-                      <div>{item.creator}</div>
-                      <div className="flex items-center space-x-2">
-                        <Clock className="w-3 h-3" />
-                        <span>{item.duration}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="text-right">
-                      <div className="text-somnia-600 font-medium">{item.rate}</div>
-                      <button className="btn-primary text-sm px-3 py-1">
-                        <Play className="w-3 h-3 mr-1" />
-                        Play
-                      </button>
-                    </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-gray-600 mb-2">Creator: {item.creator.slice(0, 6)}...{item.creator.slice(-4)}</p>
+                  <p className="text-gray-600 mb-2">Duration: {formatTime(item.duration)}</p>
+                  <p className="text-gray-600 mb-2">Rate: {(item.pricePerSecond / 1e18).toFixed(6)} ETH/s</p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-500">{item.totalViews} views</span>
+                    <span className="text-sm text-green-600">{(item.totalEarnings / 1e18).toFixed(2)} ETH earned</span>
                   </div>
                 </div>
               </div>

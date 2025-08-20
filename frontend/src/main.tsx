@@ -12,7 +12,7 @@ import App from './App.tsx'
 import './index.css'
 
 // Configure chains & providers
-const { chains, publicClient, webSocketPublicClient } = configureChains(
+const { chains, publicClient } = configureChains(
   [
     mainnet,
     polygon,
@@ -20,15 +20,15 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     arbitrum,
     base,
     zora,
-    // Hardhat local network for testing
+    // Hardhat local network for testing (simulating Somnia)
     {
       id: 31337,
-      name: 'Hardhat Local',
-      network: 'hardhat',
+      name: 'Somnia Local (Hardhat)',
+      network: 'somnia-local',
       nativeCurrency: {
         decimals: 18,
-        name: 'Ether',
-        symbol: 'ETH',
+        name: 'Somnia',
+        symbol: 'SOM',
       },
       rpcUrls: {
         public: { http: ['http://127.0.0.1:8545'] },
@@ -73,7 +73,8 @@ const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
-  webSocketPublicClient,
+  // Completely disable WebSocket
+  webSocketPublicClient: undefined,
 })
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -82,8 +83,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <RainbowKitProvider 
         chains={chains}
         locale="en-US"
+        showRecentTransactions={false}
       >
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <App />
         </BrowserRouter>
       </RainbowKitProvider>
