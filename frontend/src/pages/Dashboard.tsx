@@ -1,12 +1,15 @@
-import { useState } from 'react'
-import { Play, Pause, SkipBack, SkipForward, Volume2, DollarSign, Clock } from 'lucide-react'
+import React, { useState } from 'react';
+import { Play, Clock, Eye, DollarSign } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import ContentPlayer from '../components/content/ContentPlayer';
+import { type ContentItem } from '../types/contracts';
 
 const Dashboard = () => {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
   const [duration] = useState(180) // 3 minutes in seconds
+  const navigate = useNavigate();
+  const [selectedContent, setSelectedContent] = useState<ContentItem | null>(null);
 
-  const mockContent = [
+  const mockContent: ContentItem[] = [
     {
       id: 'content-1',
       title: 'Introduction to Web3',
@@ -40,123 +43,83 @@ const Dashboard = () => {
   ];
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, '0')}`
-  }
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying)
-  }
+  const handleContentClick = (content: ContentItem) => {
+    console.log('Content clicked:', content.id);
+    setSelectedContent(content);
+  };
 
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseInt(e.target.value)
-    setCurrentTime(newTime)
-  }
+  const handlePlayFeatured = () => {
+    console.log('Playing featured content');
+    setSelectedContent(mockContent[0]); // Use first content as featured
+  };
+
+  const handleClosePlayer = () => {
+    setSelectedContent(null);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Content Dashboard</h1>
-          <p className="text-gray-600">Discover and consume content with micropayments</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <p className="text-gray-600">Consume content with micropayments</p>
         </div>
 
         {/* Featured Content */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Featured Content</h2>
+        <div className="mb-12">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Featured Content</h2>
           
-          {/* Video Player */}
-          <div className="card">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="aspect-video bg-gray-900 rounded-lg mb-4 relative">
               <img 
                 src="https://picsum.photos/800/450?random=4"
                 alt="Featured Content"
                 className="w-full h-full object-cover rounded-lg"
               />
-              
-              {/* Video Controls Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                <div className="space-y-3">
-                  {/* Progress Bar */}
-                  <div className="w-full">
-                    <input
-                      type="range"
-                      min="0"
-                      max={duration}
-                      value={currentTime}
-                      onChange={handleSeek}
-                      className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                  </div>
-                  
-                  {/* Controls */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <button
-                        onClick={handlePlayPause}
-                        className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
-                      >
-                        {isPlaying ? (
-                          <Pause className="w-5 h-5 text-white" />
-                        ) : (
-                          <Play className="w-5 h-5 text-white ml-1" />
-                        )}
-                      </button>
-                      
-                      <button className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
-                        <SkipBack className="w-4 h-4 text-white" />
-                      </button>
-                      
-                      <button className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
-                        <SkipForward className="w-4 h-4 text-white" />
-                      </button>
-                      
-                      <div className="text-white text-sm">
-                        {formatTime(currentTime)} / {formatTime(duration)}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-4">
-                      <button className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
-                        <Volume2 className="w-4 h-4 text-white" />
-                      </button>
-                      
-                      <div className="flex items-center space-x-2 bg-white/20 rounded-full px-3 py-1">
-                        <DollarSign className="w-4 h-4 text-white" />
-                        <span className="text-white text-sm">0.001 SOM/sec</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                <button 
+                  onClick={handlePlayFeatured}
+                  className="bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-900 px-6 py-3 rounded-full flex items-center space-x-2 transition-all duration-200 transform hover:scale-105"
+                >
+                  <Play className="w-5 h-5" />
+                  <span className="font-semibold">Play with Micropayments</span>
+                </button>
               </div>
             </div>
             
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Introduction to Web3
-              </h3>
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Introduction to Web3</h3>
               <p className="text-gray-600 mb-4">
-                Learn the fundamentals of Web3, blockchain technology, and decentralized applications.
+                Learn the fundamentals of Web3, blockchain technology, and decentralized applications. 
                 This comprehensive guide covers everything you need to know to get started.
               </p>
+              
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                <div className="flex items-center space-x-6 text-sm text-gray-500">
                   <span>By Alice Crypto</span>
-                  <span>•</span>
-                  <span>15:30</span>
-                  <span>•</span>
-                  <span>1,247 views</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="flex items-center space-x-1 text-sm text-gray-500">
+                  <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4" />
-                    <span>Session: 0:45</span>
+                    <span>15:30</span>
                   </div>
-                  <div className="flex items-center space-x-1 text-sm text-somnia-600 font-medium">
+                  <div className="flex items-center space-x-1">
+                    <Eye className="w-4 h-4" />
+                    <span>1,247 views</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="text-right">
+                    <div className="text-sm text-gray-500">Session: 0:45</div>
+                    <div className="text-sm font-medium text-green-600">Paid: 0.045 SOM</div>
+                  </div>
+                  <div className="flex items-center space-x-1 text-sm text-gray-500">
                     <DollarSign className="w-4 h-4" />
-                    <span>Paid: 0.045 SOM</span>
+                    <span>$ 0.001 SOM/sec</span>
                   </div>
                 </div>
               </div>
@@ -166,17 +129,26 @@ const Dashboard = () => {
 
         {/* Content Library */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Content Library</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Content Library</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mockContent.map((item) => (
-              <div key={item.id} className="card hover:shadow-md transition-shadow cursor-pointer">
-                <div className="aspect-video bg-gray-200 rounded-lg mb-4">
+              <div 
+                key={item.id} 
+                className="card hover:shadow-md transition-shadow cursor-pointer bg-white rounded-lg shadow-sm overflow-hidden"
+                onClick={() => handleContentClick(item)}
+              >
+                <div className="aspect-video bg-gray-200 rounded-lg mb-4 relative">
                   <img 
                     src={item.thumbnail} 
                     alt={item.title}
-                    className="w-full h-full object-cover rounded-lg"
+                    className="w-full h-full object-cover"
                   />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
+                    <div className="bg-white bg-opacity-90 rounded-full p-2 opacity-0 hover:opacity-100 transition-opacity duration-200">
+                      <Play className="w-6 h-6 text-gray-900" />
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="p-4">
@@ -194,8 +166,16 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </div>
-  )
-}
 
-export default Dashboard
+      {/* Content Player Modal */}
+      {selectedContent && (
+        <ContentPlayer 
+          content={selectedContent} 
+          onClose={handleClosePlayer}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Dashboard;
