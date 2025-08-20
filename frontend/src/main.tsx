@@ -4,14 +4,12 @@ import { BrowserRouter } from 'react-router-dom'
 import { WagmiConfig, createConfig, configureChains } from 'wagmi'
 import { mainnet, polygon, optimism, arbitrum, base, zora } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
-
-import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
-import '@rainbow-me/rainbowkit/styles.css'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 
 import App from './App.tsx'
 import './index.css'
 
-// Configure chains & providers
+// Configure chains & providers - only use public provider to avoid WebSocket issues
 const { chains, publicClient } = configureChains(
   [
     mainnet,
@@ -47,14 +45,8 @@ const { chains, publicClient } = configureChains(
         symbol: 'SOM',
       },
       rpcUrls: {
-        public: { http: ['https://testnet.somnia.network'] },
-        default: { http: ['https://testnet.somnia.network'] },
-      },
-      blockExplorers: {
-        default: {
-          name: 'Somnia Blockscout',
-          url: 'https://testnet.somnia.network',
-        },
+        public: { http: ['https://testnet-rpc.somnia.zone'] },
+        default: { http: ['https://testnet-rpc.somnia.zone'] },
       },
       testnet: true,
     },
@@ -62,33 +54,22 @@ const { chains, publicClient } = configureChains(
   [publicProvider()]
 )
 
-// Set up wagmi config
-const { connectors } = getDefaultWallets({
-  appName: 'Somnia Content Monetization',
-  projectId: 'demo', // Temporary for development
-  chains,
-})
-
 const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors,
+  connectors: [
+    new MetaMaskConnector({ chains }),
+  ],
   publicClient,
-  // Completely disable WebSocket
+  // Completely disable WebSocket to avoid connection errors
   webSocketPublicClient: undefined,
 })
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider 
-        chains={chains}
-        locale="en-US"
-        showRecentTransactions={false}
-      >
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <App />
-        </BrowserRouter>
-      </RainbowKitProvider>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <App />
+      </BrowserRouter>
     </WagmiConfig>
   </React.StrictMode>,
 )
