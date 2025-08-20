@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Upload, Video, Music, Settings, DollarSign, Users } from 'lucide-react'
+import { Upload, Video, Settings, DollarSign, Users } from 'lucide-react'
 
 const Creator = () => {
   const [activeTab, setActiveTab] = useState('upload')

@@ -4,9 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { WagmiConfig, createConfig, configureChains } from 'wagmi'
 import { mainnet, polygon, optimism, arbitrum, base, zora } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+
 import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
 

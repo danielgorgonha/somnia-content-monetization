@@ -4,7 +4,7 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, DollarSign, Clock } from '
 const Dashboard = () => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(180) // 3 minutes in seconds
+  const [duration] = useState(180) // 3 minutes in seconds
 
   const contentItems = [
     {
