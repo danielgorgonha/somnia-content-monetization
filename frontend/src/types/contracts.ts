@@ -1,7 +1,7 @@
-// Contract ABIs
-import MeteredAccessABI from '../../../artifacts/contracts/MeteredAccess.sol/MeteredAccess.json';
-import CreatorRegistryABI from '../../../artifacts/contracts/CreatorRegistry.sol/CreatorRegistry.json';
-import MicroPayVaultABI from '../../../artifacts/contracts/MicroPayVault.sol/MicroPayVault.json';
+// Contract ABIs - Using dynamic imports to avoid JSON parsing issues
+// import MeteredAccessABI from '../../../artifacts/contracts/MeteredAccess.sol/MeteredAccess.json';
+// import CreatorRegistryABI from '../../../artifacts/contracts/CreatorRegistry.sol/CreatorRegistry.json';
+// import MicroPayVaultABI from '../../../artifacts/contracts/MicroPayVault.sol/MicroPayVault.json';
 
 export interface Session {
   user: string;
@@ -27,12 +27,14 @@ export interface ContentItem {
   id: string;
   creator: string;
   title: string;
-  description: string;
+  description?: string;
   pricePerSecond: number;
   totalViews: number;
   totalEarnings: number;
   isActive: boolean;
   createdAt: number;
+  thumbnail?: string;
+  duration?: number;
 }
 
 export interface MicropaymentEvent {
@@ -45,19 +47,17 @@ export interface MicropaymentEvent {
 
 export interface SessionUpdateEvent {
   sessionId: string;
-  consumptionIncrease: number;
-  paymentAmount: number;
+  consumption: number;
+  payment: number;
   timestamp: number;
 }
 
-// Contract addresses
 export const CONTRACT_ADDRESSES = {
-  CREATOR_REGISTRY: '0xf629fB3b2a5a03D70fD14bA88eA4828da5356e5D',
-  MICRO_PAY_VAULT: '0xD2f94B843557d52A81d12ED04553f57BC7D9a819',
-  METERED_ACCESS: '0xf65391952439f75E2f8c87952f0f143f3117D1f6',
+  CREATOR_REGISTRY: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707',
+  MICRO_PAY_VAULT: '0x0165878A594ca255338adfa4d48449f69242Eb8F',
+  METERED_ACCESS: '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',
 } as const;
 
-// Network configuration
 export const NETWORK_CONFIG = {
   chainId: 80085, // Somnia Testnet
   name: 'Somnia Testnet',
@@ -70,62 +70,345 @@ export const NETWORK_CONFIG = {
   },
 } as const;
 
-// Contract ABIs
+// Contract ABIs - Simplified for now
 export const CONTRACT_ABIS = {
-  METERED_ACCESS: MeteredAccessABI.abi,
-  CREATOR_REGISTRY: CreatorRegistryABI.abi,
-  MICRO_PAY_VAULT: MicroPayVaultABI.abi,
+  METERED_ACCESS: [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_creatorRegistry",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_microPayVault",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "contentId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "startSession",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "sessionId",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "sessionId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "endSession",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "getActiveSessions",
+      "outputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "",
+          "type": "bytes32[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "sessionId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint128",
+          "name": "consumption",
+          "type": "uint128"
+        }
+      ],
+      "name": "updateSession",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "sessionId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getSession",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "contentId",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "startTime",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "lastUpdate",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint128",
+              "name": "totalConsumption",
+              "type": "uint128"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "active",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct IMeteredAccess.Session",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  CREATOR_REGISTRY: [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "rate",
+          "type": "uint256"
+        }
+      ],
+      "name": "registerCreator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "rate",
+          "type": "uint256"
+        }
+      ],
+      "name": "updateProfile",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "contentId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "rate",
+          "type": "uint256"
+        }
+      ],
+      "name": "addContent",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "contentId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getContent",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "description",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "rate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "active",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "createdAt",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct ICreatorRegistry.Content",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  MICRO_PAY_VAULT: [
+    {
+      "inputs": [],
+      "name": "deposit",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
 } as const;
 
 // Contract ABIs (simplified for TypeScript)
 export interface IMeteredAccess {
-  // Session management
-  createSession(creator: string, contentId: string): Promise<string>;
-  updateSession(sessionId: string, consumption: number): Promise<void>;
-  endSession(sessionId: string): Promise<void>;
-  
-  // Queries
-  getSession(sessionId: string): Promise<Session>;
+  createSession(creator: string, contentId: string): Promise<any>;
+  updateSession(sessionId: string, consumption: number): Promise<any>;
+  endSession(sessionId: string): Promise<any>;
   getActiveSessions(user: string): Promise<string[]>;
-  getSessionConsumption(sessionId: string): Promise<number>;
-  
-  // Events
-  on(event: 'SessionCreated', listener: (sessionId: string, user: string, creator: string, contentId: string) => void): void;
-  on(event: 'SessionUpdated', listener: (sessionId: string, consumptionIncrease: number, paymentAmount: number) => void): void;
-  on(event: 'SessionEnded', listener: (sessionId: string, totalConsumption: number, totalPaid: number) => void): void;
-  on(event: 'MicropaymentProcessed', listener: (user: string, creator: string, amount: number, contentId: string) => void): void;
 }
 
 export interface ICreatorRegistry {
-  // Creator management
-  registerCreator(name: string, description: string): Promise<void>;
-  updateCreatorProfile(name: string, description: string): Promise<void>;
-  
-  // Content management
-  registerContent(title: string, description: string, pricePerSecond: number): Promise<string>;
-  updateContent(contentId: string, title: string, description: string, pricePerSecond: number): Promise<void>;
-  deactivateContent(contentId: string): Promise<void>;
-  
-  // Queries
-  getCreatorProfile(creator: string): Promise<CreatorProfile>;
-  getContent(contentId: string): Promise<ContentItem>;
-  getCreatorContent(creator: string): Promise<string[]>;
-  
-  // Events
-  on(event: 'CreatorRegistered', listener: (creator: string, name: string, description: string) => void): void;
-  on(event: 'ContentRegistered', listener: (contentId: string, creator: string, title: string, pricePerSecond: number) => void): void;
+  registerCreator(name: string, description: string, rate: number): Promise<any>;
+  updateProfile(name: string, description: string, rate: number): Promise<any>;
+  addContent(contentId: string, title: string, description: string, rate: number): Promise<any>;
 }
 
 export interface IMicroPayVault {
-  // Payment management
-  deposit(): Promise<void>;
-  withdraw(amount: number): Promise<void>;
-  
-  // Queries
-  getBalance(user: string): Promise<number>;
-  getTotalDeposits(): Promise<number>;
-  
-  // Events
-  on(event: 'Deposit', listener: (user: string, amount: number) => void): void;
-  on(event: 'Withdrawal', listener: (user: string, amount: number) => void): void;
+  deposit(amount: number): Promise<any>;
+  withdraw(amount: number): Promise<any>;
 }
+
+// App configuration
+export const APP_CONFIG = {
+  name: 'Somnia Content Monetization',
+  version: '1.0.0',
+  description: 'Universal micropayment platform for digital content creators',
+} as const;
+
+// Micropayment settings
+export const MICROPAYMENT_CONFIG = {
+  minSessionDuration: 1, // seconds
+  maxSessionDuration: 3600, // 1 hour
+  defaultRate: 1000000000000000, // 0.001 ETH/s
+  updateInterval: 10, // seconds
+} as const;
+
+// UI constants
+export const UI_CONFIG = {
+  maxContentTitleLength: 100,
+  maxDescriptionLength: 500,
+  maxCreatorNameLength: 50,
+  defaultThumbnailAspectRatio: 16 / 9,
+} as const;
