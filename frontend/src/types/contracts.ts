@@ -1,3 +1,8 @@
+// Contract ABIs
+import MeteredAccessABI from '../../../artifacts/contracts/MeteredAccess.sol/MeteredAccess.json';
+import CreatorRegistryABI from '../../../artifacts/contracts/CreatorRegistry.sol/CreatorRegistry.json';
+import MicroPayVaultABI from '../../../artifacts/contracts/MicroPayVault.sol/MicroPayVault.json';
+
 export interface Session {
   user: string;
   creator: string;
@@ -57,12 +62,19 @@ export const NETWORK_CONFIG = {
   chainId: 80085, // Somnia Testnet
   name: 'Somnia Testnet',
   rpcUrl: 'https://testnet.somnia.network',
-  explorer: 'https://testnet.somnia.network',
+  blockExplorer: 'https://testnet.somnia.network',
   nativeCurrency: {
     name: 'Somnia',
     symbol: 'SOM',
     decimals: 18,
   },
+} as const;
+
+// Contract ABIs
+export const CONTRACT_ABIS = {
+  METERED_ACCESS: MeteredAccessABI.abi,
+  CREATOR_REGISTRY: CreatorRegistryABI.abi,
+  MICRO_PAY_VAULT: MicroPayVaultABI.abi,
 } as const;
 
 // Contract ABIs (simplified for TypeScript)

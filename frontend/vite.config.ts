@@ -18,4 +18,8 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
   },
+  assetsInclude: ['**/*.json'],
+  json: {
+    stringify: true,
+  },
 })
